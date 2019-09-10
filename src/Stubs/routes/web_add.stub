@@ -1,0 +1,6 @@
+{{{ foreach($models): }}}
+{{{ if($this.is_pivot==false): }}}
+Route::get("{{{ $this.name|name-names }}}/{{{{ $this.name|nameName }}}}/duplicate", ['as' => '{{{ $this.name|name-names }}}.duplicate', 'uses' => '{{{ $this.name|NameName }}}Controller@duplicate']);
+Route::resource("{{{ $this.name|name-names }}}","{{{ $this.name|NameName }}}Controller");
+{{{ endif; }}}
+{{{ endforeach; }}}

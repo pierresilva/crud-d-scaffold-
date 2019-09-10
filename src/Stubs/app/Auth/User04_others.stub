@@ -1,0 +1,92 @@
+	// Validate Rule
+    public static function getValidateRule({{{ $name|NameName }}} ${{{ $name|name_name }}}=null){
+        if($user){
+            $ignore_unique = ${{{ $name|name_name }}}->id;
+        }else{
+            $ignore_unique = 'NULL';
+        }
+        $table_name = '{{{ $name|name_names }}}';
+        $validation_rule = [
+
+{{{ foreach($schemas): }}}
+{{{ if($this.varidate!=''): }}}
+            'model.{{{ $this.name|name_name }}}' => '{{{ $this.varidate }}}',
+{{{ else: }}}
+            'model.{{{ $this.name|name_name }}}' => '{{{ $this.getVaridate() }}}{{{ if($use_soft_delete==true): }}}{{{ if($this.unique==true): }}},deleted_at,NOT_NULL{{{ endif; }}}{{{ endif; }}}',
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+{{{ foreach($this.pivotModelSchemas): }}}
+{{{ if($this.varidate!=''): }}}
+        	'pivots.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}' => '{{{ $this.varidate }}}',
+{{{ else: }}}
+        	'pivots.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}' => '{{{ $this.getVaridate() }}}',
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+        ];
+        if(${{{ $name|name_name }}}){
+{{{ foreach($schemas): }}}
+{{{ if($this.input_type=='password'): }}}
+            $validation_rule['model.{{{ $this.name|name_name }}}'] = str_replace( 'required', '', $validation_rule['model.{{{ $this.name|name_name }}}'] );
+            $validation_rule['model.{{{ $this.name|name_name }}}'] = str_replace( '||', '|', $validation_rule['model.{{{ $this.name|name_name }}}'] );
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+{{{ foreach($this.pivotModelSchemas): }}}
+{{{ if($this.varidate!=''): }}}
+            $validation_rule['model.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}'] = str_replace( 'required', '', $validation_rule['model.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}'] );
+            $validation_rule['model.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}'] = str_replace( '||', '|', $validation_rule['model.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}'] );
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}
+        }
+        return $validation_rule;
+    }
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='hasMany'): }}}
+	public function {{{ $this.targetModel.name|nameNames }}}() {
+		return $this->hasMany('App\{{{ $this.targetModel.name|NameName }}}');
+	}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+	public function {{{ $this.targetModel.name|nameName }}}() {
+		return $this->belongsTo('App\{{{ $this.targetModel.name|NameName }}}');
+	}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+	public function {{{ $this.targetModel.name|nameNames }}}() {
+		return $this->belongsToMany('App\{{{ $this.targetModel.name|NameName }}}')
+{{{ if($this.implodePivotColumns()!=''): }}}
+		->withPivot({{{ $this.implodePivotColumns() }}})
+{{{ endif; }}}
+		->orderBy('id')
+		->withTimestamps();
+	}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+
+	public static function getLists() {
+		$lists = [];
+{{{ foreach($relations): }}}
+		$lists['{{{ $this.targetModel.name|NameName }}}'] = {{{ $this.targetModel.name|NameName }}}::pluck( '{{{ $this.targetModel.getRelationSchema().name|name_name }}}' ,'id' );
+{{{ endforeach; }}}
+		return $lists;
+	}

@@ -1,0 +1,39 @@
+{
+  "name": "pierresilva/crud-d-scaffold",
+  "description": "Extend Laravel 6 generators scaffold.",
+  "keywords": ["laravel", "generators", "scaffold" , "laravel5.8" , "CRUD" , "crud"],
+  "license": "MIT",
+  "minimum-stability": "master",
+  "authors": [
+    {
+      "name": "Pierre Silva",
+      "email": "pierremichelsilva@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.0",
+    "illuminate/support": "5.*",
+    "laravel/framework": ">=5.8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "6.*",
+    "orchestra/testbench": "~3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "pierresilva\\CrudDscaffold\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+        "Tests\\Unit\\": "tests/unit/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "pierresilva\\CrudDscaffold\\GeneratorsServiceProvider"
+      ]
+    }
+  }
+}
