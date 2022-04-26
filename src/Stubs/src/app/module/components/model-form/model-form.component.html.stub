@@ -53,6 +53,26 @@
 {{{ endif; }}}
     </mat-form-field>
 {{{ endif; }}}
+{{{ if($this.input_type=='textarea'): }}}
+    <mat-form-field style="width: 100%;"
+                    appearance="outline">
+      <mat-label><span translate>{{{ $this.display_name }}}</span></mat-label>
+
+      <textarea matInput
+                {{{ if($this.nullable==false): }}}required{{{ endif; }}}
+                style=" min-height: 64px;"
+                name="{{{ $this.name|name_name }}}"
+                id="{{{ $this.name|name_name }}}"
+                [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}"
+                #{{{ $this.name|name_name }}}="ngModel"
+                [placeholder]="('Enter' | translate) + ' ' + ('{{{ $this.display_name }}}' | translate)"></textarea>
+{{{ if($this.nullable==false): }}}
+      <mat-error class="error"
+                 *ngIf="{{{ $this.name|name_name }}}.hasError('required')"><span translate>This field is required</span>
+      </mat-error>
+{{{ endif; }}}
+    </mat-form-field>
+{{{ endif; }}}
 {{{ if($this.input_type=='email'): }}}
     <mat-form-field style="width: 100%;"
                     appearance="outline">
@@ -172,6 +192,7 @@
                    [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}"
                    {{{ if($this.nullable==false): }}}required{{{ endif; }}}>
             <td-file-input matSuffix
+                           [hasPermission]="['{{{ $name|name_names }}}_store', '{{{ $name|name_names }}}_update']"
                            [name]="'{{{ $this.name|name_name }}}_file'"
                            [(ngModel)]="files"
                            color="primary"
@@ -294,6 +315,7 @@
 
   <div class="pad-top-lg">
     <button mat-raised-button
+            [hasPermission]="['{{{ $name|name_names }}}_store', '{{{ $name|name_names }}}_update']"
             color="success"
             [disabled]="{{{ $name|nameNames }}}Form.invalid"
             (click)="{{{ $name|nameName }}}Service.save()"

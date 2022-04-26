@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from "@shared/guards/auth.guard";
 import { {{{ $name|NameNames }}}Component } from "@app/admin/{{{ $name|name-names }}}/{{{ $name|name-names }}}.component";
 import { {{{ $name|NameNames }}}ListComponent } from "@app/admin/{{{ $name|name-names }}}/components/{{{ $name|name-names }}}-list/{{{ $name|name-names }}}-list.component";
 
@@ -11,10 +12,18 @@ const routes: Routes = [
       {
         path: '',
         component: {{{ $name|NameNames }}}ListComponent,
+        canActivate: [AuthGuard],
+        data: {
+          permissions: ['{{{ $name|name_names }}}_index']
+        }
       },
       {
         path: ':id',
         component: {{{ $name|NameNames }}}ListComponent,
+        canActivate: [AuthGuard],
+        data: {
+          permissions: ['{{{ $name|name_names }}}_show']
+        }
       }
     ]
   }

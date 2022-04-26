@@ -20,7 +20,9 @@
     */
    public function index(Request $request)
    {
-       // user_can(['{{{ $name|name_name }}}.index']);
+       if(!AuthHelper::userCan(['{{{ $name|name_names }}}_index'])) {
+         return $this->responseError('Operation not allowed!', [], 401);
+       };
 
     // ${{{ $name|nameNames }}} = new {{{ $name|NameName }}};
     ${{{ $name|nameNames }}} = {{{ $name|NameName }}}::with({{{ $name|NameName }}}::getRelationships());
@@ -76,7 +78,9 @@
     */
    public function store(Request $request)
    {
-       // user_can(['{{{ $name|name_name }}}.store']);
+       if(!AuthHelper::userCan(['{{{ $name|name_names }}}_store'])) {
+        return $this->responseError('Operation not allowed!', [], 401);
+       };
 
        $this->varidate($request);
 
@@ -174,7 +178,9 @@
     */
    public function show(${{{ $name|nameName }}}Id)
    {
-       // user_can(['{{{ $name|name_name }}}.show']);
+       if(!AuthHelper::userCan(['{{{ $name|name_names }}}_show'])) {
+         return $this->responseError('Operation not allowed!', [], 401);
+       };
 
        ${{{ $name|nameName }}} = {{{ $name|NameName }}}::with({{{ $name|NameName }}}::getRelationships())->findOrFail(${{{ $name|nameName }}}Id);
 
@@ -238,8 +244,9 @@
     */
    public function update(${{{ $name|nameName }}}Id, Request $request)
    {
-
-       // user_can(['{{{ $name|name_name }}}.update']);
+       if(!AuthHelper::userCan(['{{{ $name|name_names }}}_update'])) {
+        return $this->responseError('Operation not allowed!', [], 401);
+       };
 
        ${{{ $name|nameName }}} = {{{ $name|NameName }}}::findOrFail(${{{ $name|nameName }}}Id);
 
@@ -346,7 +353,9 @@
    public function destroy(${{{ $name|nameName }}}Id)
    {
 
-       // user_can(['{{{ $name|name_name }}}.destroy']);
+       if(!AuthHelper::userCan(['{{{ $name|name_names }}}_delete'])) {
+        return $this->responseError('Operation not allowed!', [], 401);
+       };
 
        ${{{ $name|nameName }}} = {{{ $name|NameName }}}::findOrFail(${{{ $name|nameName }}}Id);
        ${{{ $name|nameName }}}->delete();
@@ -393,7 +402,9 @@
     */
    public function destroyMultiple(Request $request)
    {
-       // user_can(['tag.destroy']);
+       if(!AuthHelper::userCan(['{{{ $name|name_names }}}_delete'])) {
+          return $this->responseError('Operation not allowed!', [], 401);
+       };
 
        if (!$request->get('ids') || !count($request->get('ids'))) {
            return $this->responseError('Validation error', [
@@ -448,6 +459,9 @@
     * )
     */
    public function export()  {
+       if(!AuthHelper::userCan(['{{{ $name|name_names }}}_export'])) {
+         return $this->responseError('Operation not allowed!', [], 401);
+       };
        return \Maatwebsite\Excel\Facades\Excel::download(new {{{ $name|NameNames }}}Export(), '{{{ $name|name-names }}}.xlsx');
    }
 

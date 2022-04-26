@@ -13,6 +13,7 @@
              class="mat-title uppercase"><span translate>{{{ $display_name|titles }}}</span></span>
        <button mat-flat-button
                [color]="'warn'"
+               [hasPermission]="['{{{ $name|name_names }}}_delete']"
                (click)="{{{ $name|nameName }}}Service.deleteMultiple()"
                *ngIf="{{{ $name|nameName }}}Service.selectedItems.length && {{{ $name|nameName }}}Service.selectable">
          <span translate>Delete</span> {{ {{{ $name|nameName }}}Service.selectedItems.length }} item(s)
@@ -22,7 +23,7 @@
                    [ngStyle]="{display: {{{ $name|nameName }}}Service.selectedItems.length ? 'none' : 'block'}"
                    backIcon="arrow_back"
                    class="push-right-sm"
-                   [placeholder]="('Search' | translate) + ' ' + ('{{{ $display_name|NAME NAME }}}' | translate)"
+                   [placeholder]="('Search' | translate) + ' ' + ('{{{ $display_name }}}' | translate)"
                    (close)="{{{ $name|nameName }}}Service.setSearchTerm(null); {{{ $name|nameName }}}Service.getItems()"
                    (searchDebounce)="{{{ $name|nameName }}}Service.setSearchTerm($event); {{{ $name|nameName }}}Service.getItems()"
                    flex></td-search-box>
@@ -153,6 +154,7 @@
                  [total]="{{{ $name|nameName }}}Service.apiMeta.total"
                  (change)="{{{ $name|nameName }}}Service.getItems($event.page)">
     <a mat-mini-fab
+       [hasPermission]="['{{{ $name|name_names }}}_export']"
        color="info"
        [href]="environment.url + '/api/{{{ $name|name-names }}}/export'"
        target="_blank">
@@ -160,9 +162,10 @@
     </a>
 
     <button mat-mini-fab
-       color="success"
-       (click)="{{{ $name|nameName }}}Service.model = {id: 0}; router.navigateByUrl('/admin/{{{ $name|name-names }}}/0'); sidenav.sidenav.open()">
-      <mat-icon>add</mat-icon>
+            [hasPermission]="['{{{ $name|name_names }}}_store']"
+            color="success"
+            (click)="{{{ $name|nameName }}}Service.model = {id: 0}; router.navigateByUrl('/admin/{{{ $name|name-names }}}/0'); sidenav.sidenav.open()">
+            <mat-icon>add</mat-icon>
     </button>
 
     <span flex></span>
