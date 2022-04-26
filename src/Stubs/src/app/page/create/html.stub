@@ -1,0 +1,32 @@
+<ion-header>
+    <ion-toolbar>
+
+        <ion-buttons slot="start">
+            <!-- <ion-button [routerLink]="'/{{{ $name|name-names }}}'">
+                <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+            </ion-button> -->
+            <ion-back-button
+              [text]="''"
+              [icon]="'arrow-back-outline'">
+            </ion-back-button>
+        </ion-buttons>
+
+        <ion-buttons slot="primary">
+            <ion-button (click)="{{{ $name|nameNames }}}Service.store{{{ $name|NameName }}}()"
+                        color="success"
+                        fill="clear"
+                        [disabled]="!{{{ $name|nameNames }}}Service.{{{ $name|nameNames }}}FormValid.value">
+                        <ng-container *ngIf="!platform.is('mobile')">Guardar</ng-container>
+                <ion-icon slot="end" color="success" name="save-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+
+        <ion-title>Crear {{'{{{ $display_name }}}' | titlecase}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content fullscreen>
+    <ion-card>
+        <app-{{{ $name|name-names }}}-form #{{{ $name|nameName }}}Form [model]="{{{ $name|nameNames }}}Service.{{{ $name|nameName }}}"></app-{{{ $name|name-names }}}-form>
+    </ion-card>
+
+</ion-content>

@@ -1,19 +1,19 @@
 <?php
 
 /**
-Copyright (c) 2016 dog-ears
+ * Copyright (c) 2016 dog-ears
+ *
+ * This software is released under the MIT License.
+ * http://dog-ears.net/
+ */
 
-This software is released under the MIT License.
-http://dog-ears.net/
-*/
-
-namespace pierresilva\CrudDscaffold\MyClass;
+namespace pierresilva\LaravelCrud\MyClass;
 
 use Illuminate\Support\Str;
 
 class Relation
 {
-    public function __construct( $type, $originalModel, $targetModel, $pivotModel=null, $pivotModelSchemas=array() )
+    public function __construct($type, $originalModel, $targetModel, $pivotModel = null, $pivotModelSchemas = array())
     {
         $this->type = $type;   // belongsTo or hasMany or belongsToMany
         $this->originalModel = $originalModel;
@@ -22,12 +22,13 @@ class Relation
         $this->pivotModelSchemas = $pivotModelSchemas;
     }
 
-    public function implodePivotColumns(){
+    public function implodePivotColumns()
+    {
         $result = '';
-        foreach( $this->pivotModelSchemas as $schema ){
-            $result .= ",'". Str::snake(Str::singular($schema->name))."'";
+        foreach ($this->pivotModelSchemas as $schema) {
+            $result .= ",'" . Str::snake(Str::singular($schema->name)) . "'";
         }
-        $result = ltrim($result,',');
+        $result = ltrim($result, ',');
         return $result;
     }
 }

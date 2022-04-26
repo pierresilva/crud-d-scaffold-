@@ -1,0 +1,98 @@
+import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {{{{ $name|NameName }}}} from "../{{{ $name|name-name }}}";
+import {FormGroup} from "@angular/forms";
+import {{{{ $name|NameNames }}}Service} from "../{{{ $name|name-names }}}.service";
+import {TitleCasePipe} from "@angular/common";
+
+@Component({
+    selector: 'app-{{{ $name|name-names }}}-form',
+    templateUrl: './{{{ $name|name-names }}}-form.component.html',
+    styleUrls: ['./{{{ $name|name-names }}}-form.component.scss']
+})
+export class {{{ $name|NameNames }}}FormComponent implements OnInit, AfterViewInit {
+
+    @Input('model') model: {{{ $name|NameName }}} = <{{{ $name|NameName }}}>{};
+
+    @ViewChild('{{{ $name|nameNames }}}Form') {{{ $name|nameNames }}}Form: FormGroup;
+
+    public validationMessages = {
+{{{ foreach($schemas): }}}
+{{{ if($this.show_in_detail==true): }}}
+        '{{{ $this.name|name_name }}}': [
+            {type: 'required', message: 'El campo ' + this.toTitlecase.transform('{{{ $this.display_name }}}') + ' es obligatorio.'},
+        ],
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+        '{{{ $this.targetModel.name|name_name }}}_ids': [
+            {type: 'required', message: 'El campo ' + this.toTitlecase.transform('{{{ $this.targetModel.display_name }}}') + ' es obligatorio.'},
+        ],
+{{{ endif; }}}
+{{{ if($this.type=='hasMany'): }}}
+        '{{{ $this.targetModel.name|name_name }}}_ids': [
+            {type: 'required', message: 'El campo ' + this.toTitlecase.transform('{{{ $this.targetModel.display_name }}}') + ' es obligatorio.'},
+        ],
+{{{ endif; }}}
+{{{ endforeach; }}}
+    };
+
+    constructor(
+        public {{{ $name|nameNames }}}Service: {{{ $name|NameNames }}}Service,
+        private toTitlecase: TitleCasePipe
+    ) {
+
+    }
+
+    ngOnInit(): void {
+    }
+
+    ngAfterViewInit() {
+    }
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+
+    // set set{{{ $this.targetModel.name|NameName }}}Id
+
+    set{{{ $this.targetModel.name|NameName }}}Id(event: any) {
+        this.{{{ $name|nameNames }}}Service.{{{ $name|nameName }}}.{{{ $this.targetModel.name|name_name }}}_id = event.value ? event.value.id : null;
+    }
+    // end set{{{ $this.targetModel.name|NameName }}}Id
+
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+
+    // set set{{{ $this.targetModel.name|NameName }}}Ids
+    set{{{ $this.targetModel.name|NameName }}}Ids(event: any) {
+        let {{{ $this.targetModel.name|nameName }}}Ids = null;
+        if (event.value.length) {
+            {{{ $this.targetModel.name|nameName }}}Ids = [];
+            for (let i = 0; i < event.value.length; i++) {
+                {{{ $this.targetModel.name|nameName }}}Ids.push(event.value[i].id);
+            }
+        }
+        this.{{{ $name|nameNames }}}Service.{{{ $name|nameName }}}.{{{ $this.targetModel.name|name_name }}}_ids = {{{ $this.targetModel.name|nameName }}}Ids;
+    }
+    // end set{{{ $this.targetModel.name|NameName }}}Ids
+
+{{{ endif; }}}
+{{{ if($this.type=='hasMany'): }}}
+
+    // set set{{{ $this.targetModel.name|NameName }}}Ids
+    set{{{ $this.targetModel.name|NameName }}}Ids(event: any) {
+        let {{{ $this.targetModel.name|nameName }}}Ids = null;
+        if (event.value.length) {
+            {{{ $this.targetModel.name|nameName }}}Ids = [];
+            for (let i = 0; i < event.value.length; i++) {
+                {{{ $this.targetModel.name|nameName }}}Ids.push(event.value[i].id);
+            }
+        }
+        this.{{{ $name|nameNames }}}Service.{{{ $name|nameName }}}.{{{ $this.targetModel.name|name_name }}}_ids = {{{ $this.targetModel.name|nameName }}}Ids;
+    }
+    // end set{{{ $this.targetModel.name|NameName }}}Ids
+
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+}

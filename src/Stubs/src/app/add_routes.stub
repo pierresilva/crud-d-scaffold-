@@ -1,0 +1,17 @@
+{{{ foreach($models): }}}
+{{{ if($this.name!='user'): }}}
+{{{ if($this.is_pivot==false): }}}
+    {
+        path: '{{{ $this.name|name-names }}}',
+        canActivate: [AuthGuard],
+        canActivateChild: [AuthGuard],
+        data: {
+            title: '{{{ $this.display_name }}}',
+            roles: ['admin'],
+            // permissions: []
+        },
+        loadChildren: () => import('./{{{ $this.name|name-names }}}/{{{ $this.name|name-names }}}.module').then( m => m.{{{ $this.name|NameNames }}}PageModule)
+    },
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}

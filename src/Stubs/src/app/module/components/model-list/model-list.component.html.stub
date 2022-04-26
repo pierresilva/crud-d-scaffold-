@@ -1,0 +1,183 @@
+<mat-sidenav-container flex>
+
+  <app-{{{ $name|name-names }}}-sidenav #sidenav></app-{{{ $name|name-names }}}-sidenav>
+
+  <div layout="row"
+       style="min-height: 53px;"
+       layout-align="start center"
+       class="pad-left-sm pad-right-sm"
+       [class.mat-selected-title]="{{{ $name|nameName }}}Service.selectedItems.length && {{{ $name|nameName }}}Service.selectable">
+     <span *ngIf="!searchBox.searchVisible"
+           class="push-left-sm">
+       <span *ngIf="({{{ $name|nameName }}}Service.selectable && !{{{ $name|nameName }}}Service.selectedItems.length) || !{{{ $name|nameName }}}Service.selectable"
+             class="mat-title uppercase"><span translate>{{{ $display_name|titles }}}</span></span>
+       <button mat-flat-button
+               [color]="'warn'"
+               (click)="{{{ $name|nameName }}}Service.deleteMultiple()"
+               *ngIf="{{{ $name|nameName }}}Service.selectedItems.length && {{{ $name|nameName }}}Service.selectable">
+         <span translate>Delete</span> {{ {{{ $name|nameName }}}Service.selectedItems.length }} item(s)
+       </button>
+     </span>
+    <td-search-box #searchBox
+                   [ngStyle]="{display: {{{ $name|nameName }}}Service.selectedItems.length ? 'none' : 'block'}"
+                   backIcon="arrow_back"
+                   class="push-right-sm"
+                   [placeholder]="('Search' | translate) + ' ' + ('{{{ $display_name|NAME NAME }}}' | translate)"
+                   (close)="{{{ $name|nameName }}}Service.setSearchTerm(null); {{{ $name|nameName }}}Service.getItems()"
+                   (searchDebounce)="{{{ $name|nameName }}}Service.setSearchTerm($event); {{{ $name|nameName }}}Service.getItems()"
+                   flex></td-search-box>
+  </div>
+  <mat-divider></mat-divider>
+
+  <ng-container *ngIf="{{{ $name|nameName }}}Service.items.length">
+    <td-data-table #dataTable
+                   [ngClass]="{'layout-mat-sidenav-container': !layoutService.isMobile, 'layout-mat-sidenav-container-mobile': layoutService.isMobile}"
+                   [data]="{{{ $name|nameName }}}Service.items"
+                   [columns]="{{{ $name|nameName }}}Service.columns"
+                   [selectable]="{{{ $name|nameName }}}Service.selectable"
+                   [clickable]="{{{ $name|nameName }}}Service.clickable"
+                   [multiple]="{{{ $name|nameName }}}Service.multiple"
+                   [sortable]="true"
+                   [sortBy]="'id'"
+                   [resizableColumns]="false"
+                   [(ngModel)]="{{{ $name|nameName }}}Service.selectedItems"
+                   [sortOrder]="{{{ $name|nameName }}}Service.sortOrder"
+                   (sortChange)="{{{ $name|nameName }}}Service.setSortBy($event); {{{ $name|nameName }}}Service.getItems()"
+                   (rowClick)="null">
+
+{{{ foreach($schemas): }}}
+{{{ if($this.belongsto==''): }}}
+{{{ if($this.show_in_list==true): }}}
+{{{ if($this.input_type=='date'): }}}
+
+      <ng-template tdDataTableTemplate="{{{ $this.name|name_name }}}"
+                   let-index="index"
+                   let-value="value">
+        <span matLine
+              [title]="value">{{value | dateFormat}}</span>
+
+      </ng-template>
+{{{ endif; }}}
+{{{ if($this.input_type=='text'): }}}
+
+      <ng-template tdDataTableTemplate="{{{ $this.name|name_name }}}"
+                   let-index="index"
+                   let-value="value">
+        <span class="truncate-text"
+              [title]="value">{{value}}</span>
+
+      </ng-template>
+{{{ endif; }}}
+{{{ if($this.input_type=='textarea'): }}}
+
+      <ng-template tdDataTableTemplate="{{{ $this.name|name_name }}}"
+                   let-index="index"
+                   let-value="value">
+        <span class="truncate-text"
+              [title]="value">{{value}}</span>
+
+      </ng-template>
+{{{ endif; }}}
+{{{ if($this.input_type=='html'): }}}
+
+      <ng-template tdDataTableTemplate="{{{ $this.name|name_name }}}"
+                   let-index="index"
+                   let-value="value">
+        <span class="truncate-text"
+              [title]="value">{{value}}</span>
+
+      </ng-template>
+{{{ endif; }}}
+{{{ if($this.input_type=='datetime'): }}}
+
+      <ng-template tdDataTableTemplate="{{{ $this.name|name_name }}}"
+                   let-index="index"
+                   let-value="value">
+        <span class="truncate-text"
+              [title]="value">{{value | datetimeFormat}}</span>
+
+      </ng-template>
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+
+      <ng-template tdDataTableTemplate="{{{ $this.targetModel.name|name_name }}}.{{{ $this.targetModel.getRelationSchema().name|name_name }}}"
+                   let-index="index"
+                   let-value="value">
+        <span class="truncate-text"
+              [title]="value">{{value}}</span>
+
+      </ng-template>
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+      <ng-template tdDataTableTemplate="id"
+                   let-index="index"
+                   let-value="value">
+        <button mat-icon-button
+                style="margin-left: -26px;"
+                [routerLink]="'/admin/{{{ $name|name-names }}}/' + value"
+                (click)="{{{ $name|nameName }}}Service.getItem(value); this.sidenav.sidenav.open()">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </ng-template>
+
+    </td-data-table>
+
+  </ng-container>
+
+  <ng-container *ngIf="!{{{ $name|nameName }}}Service.items.length">
+    <div layout="column"
+         layout-align="center center"
+         class="tc-grey-500 mat-typography pad-lg"
+         style="height: calc(100vh - 182px);">
+      <mat-icon matListAvatar
+                class="text-super push-bottom">people
+      </mat-icon>
+      <h2><span translate>No</span> <span translate>{{{ $display_name }}}</span> <span translate>available</span></h2>
+      <button mat-flat-button
+              type="button"
+              (click)="{{{ $name|nameName }}}Service.model = {id: 0}; router.navigateByUrl('/admin/{{{ $name|name-names }}}/0'); sidenav.sidenav.open()">
+        <span translate>CREATE</span> <span translate>{{{ $display_name }}}</span>
+      </button>
+    </div>
+  </ng-container>
+
+
+  <td-paging-bar #pagingBar
+                 *ngIf="{{{ $name|nameName }}}Service.items.length"
+                 [pageSize]="{{{ $name|nameName }}}Service.perPage"
+                 [total]="{{{ $name|nameName }}}Service.apiMeta.total"
+                 (change)="{{{ $name|nameName }}}Service.getItems($event.page)">
+    <a mat-mini-fab
+       color="info"
+       [href]="environment.url + '/api/{{{ $name|name-names }}}/export'"
+       target="_blank">
+      <mat-icon>file_download</mat-icon>
+    </a>
+
+    <button mat-mini-fab
+       color="success"
+       (click)="{{{ $name|nameName }}}Service.model = {id: 0}; router.navigateByUrl('/admin/{{{ $name|name-names }}}/0'); sidenav.sidenav.open()">
+      <mat-icon>add</mat-icon>
+    </button>
+
+    <span flex></span>
+    <span hide-xs translate>Per page</span>:
+    <mat-select hide-xs
+                [style.width.px]="50"
+                [(ngModel)]="{{{ $name|nameName }}}Service.perPage">
+      <mat-option *ngFor="let size of [20, 50, 100]"
+                  (onSelectionChange)="{{{ $name|nameName }}}Service.setPerPage($event); {{{ $name|nameName }}}Service.getItems()"
+                  [value]="size">
+        {{ size }}
+      </mat-option>
+    </mat-select>
+    {{ pagingBar.range }}
+    <span hide-xs><span translate>of</span> {{ pagingBar.total }}</span>
+  </td-paging-bar>
+
+</mat-sidenav-container>

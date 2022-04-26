@@ -1,0 +1,503 @@
+<?php
+
+/**
+ * {{{ $name|NameName }}}
+
+ */
+
+{{{ if($module!=''): }}}
+namespace App\Modules\{{{ $module }}}\Http\Controllers\Api;
+{{{ else: }}}
+namespace App\Http\Controllers\Api;
+{{{ endif; }}}
+
+use App\Http\Controllers\ApiController;
+{{{ if($module!=''): }}}
+use App\Modules\{{{ $module }}}\Exports\{{{ $name|NameNames }}}Export;
+use App\Modules\{{{ $module }}}\Models\{{{ $name|NameName }}};
+{{{ else: }}}
+use App\Exports\{{{ $name|NameNames }}}Export;
+use App\Models\{{{ $name|NameName }}};
+{{{ endif; }}}
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
+/**
+ * @OA\Tag(
+ *     name="{{{ $name|NameNames }}}",
+ *     description="API Endpoints of {{{ $name|nameNames }}}"
+ * )
+ */
+class {{{ $name|NameName }}}Controller extends ApiController
+{
+
+// generated section
+
+    /**
+    * @OA\GET(
+    *   path="/api/{{{ $name|name-names }}}",
+    *   tags={"{{{ $name|NameNames }}}"},
+    *   summary="Get list of {{{ $display_name|lowers }}}",
+    *   description="Returns list of {{{ $display_name|lowers }}}",
+    *   @OA\Parameter(ref="#/components/parameters/query"),
+    *   @OA\Parameter(ref="#/components/parameters/sort"),
+    *   @OA\Parameter(ref="#/components/parameters/per-page"),
+    *   @OA\Parameter(ref="#/components/parameters/page"),
+    *   @OA\Response(
+    *     response=200,
+    *     description="Paginated {{{ $display_name|lowers }}} list."
+    *   ),
+    *   @OA\Response(
+    *    response=400,
+    *    description="Reponse error."
+    *   )
+    * )
+    */
+   public function index(Request $request)
+   {
+       // user_can(['{{{ $name|name_name }}}.index']);
+
+    // ${{{ $name|nameNames }}} = new {{{ $name|NameName }}};
+    ${{{ $name|nameNames }}} = {{{ $name|NameName }}}::with({{{ $name|NameName }}}::getRelationships());
+
+    // (1)filltering
+       ${{{ $name|nameNames }}} = $this->filtering($request, ${{{ $name|nameNames }}});
+       ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->get();
+
+       // (2)sort
+       ${{{ $name|nameNames }}} = $this->sorting($request, ${{{ $name|nameNames }}});
+
+       // (3)paginate
+       ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->paginate($request->get('per-page') ?? 10);
+
+       $resource = ${{{ $name|nameNames }}}->toArray();
+
+       $resource['lists'] = {{{ $name|NameName }}}::getLists();
+
+       return $this->responseSuccess(
+         '{{{ $display_name|titles }}} list obtained!',
+         $resource,
+         true,
+         false
+       );
+   }
+
+   /**
+    * @OA\POST(
+    *   path="/api/{{{ $name|name-names }}}",
+    *   summary="Create {{{ $display_name|lower }}}",
+    *   tags={"{{{ $name|NameNames }}}"},
+    *   @OA\RequestBody(
+    *     required=true,
+    *     description="Returns created new {{{ $display_name|lower }}}",
+    *     @OA\JsonContent(
+    *       type="object",
+    *       @OA\Property(
+    *         property="model",
+    *         type="object",
+    *         ref="#/components/schemas/{{{ $name|NameName }}}",
+    *       ),
+    *     ),
+    *   ),
+    *   @OA\Response(
+    *     response="201",
+    *     description="Successful book created",
+    *   ),
+    *   @OA\Response(
+    *     response="422",
+    *     description="Validation error",
+    *   ),
+    * )
+    */
+   public function store(Request $request)
+   {
+       // user_can(['{{{ $name|name_name }}}.store']);
+
+       $this->varidate($request);
+
+       $input = $request->input('model');
+
+{{{ foreach($schemas): }}}
+{{{ if($this.name=='password'): }}}
+       $input['{{{ $this.name|name_name }}}'] = bcrypt($input['{{{ $this.name|name_name }}}']);
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ foreach($schemas): }}}
+{{{ if($this.name=='code'): }}}
+        $input['code'] = $input['code'] ?? Str::slug($input['{{{ $parent.getRelationSchema().name|name_name }}}']);
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+       DB::beginTransaction();
+       try {
+         //create data
+         ${{{ $name|nameName }}} = {{{ $name|NameName }}}::create( $input );
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='hasMany'): }}}
+           if (isset($input['{{{ $this.targetModel.name|name_names }}}']) && count($input['{{{ $this.targetModel.name|name_names }}}'])) {
+               foreach ($input['{{{ $this.targetModel.name|name_names }}}'] as ${{{ $this.targetModel.name|nameName }}}) {
+                 {{{ if($module!=''): }}}\App\Modules\{{{ $module }}}\Models\{{{ else: }}}\App\Models\{{{ endif; }}}{{{ $this.targetModel.name|NameName }}}::find(${{{ $this.targetModel.name|nameName }}}['id'])->update(['{{{ $name|name_name }}}_id' => ${{{ $name|nameName }}}->id]);
+               }
+           }
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+           if ($request->input('model.{{{ $this.targetModel.name|name_name }}}_ids')) {
+               ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}}()->sync($request->input('model.{{{ $this.targetModel.name|name_name }}}_ids'));
+           }
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+       } catch (\Exception $exception) {
+         DB::rollBack();
+         return $this->responseError(
+           '' . $exception->getMessage(),
+           [
+             'message' => $exception->getMessage(),
+             'file' => $exception->getFile(),
+             'line' => $exception->getLine(),
+           ]
+         );
+       }
+       DB::commit();
+
+       return $this->responseSuccess(
+         '{{{ $display_name|title }}} stored!',
+         ${{{ $name|nameName }}}->toArray(),
+         false,
+         false,
+         201
+       );
+   }
+
+   /**
+    * @OA\GET(
+    *      path="/api/{{{ $name|name-names }}}/{id}",
+    *      tags={"{{{ $name|NameNames }}}"},
+    *      summary="Get {{{ $name|lower }}} data",
+    *      description="Returns {{{ $name|lower }}} data",
+    *      @OA\Parameter(
+    *          name="id",
+    *          description="{{{ $name|NameName }}} ID",
+    *          required=true,
+    *          in="path",
+    *          @OA\Schema(
+    *              type="integer"
+    *          )
+    *      ),
+    *      @OA\Response(
+    *          response=200,
+    *          description="Successful get {{{ $name|lower }}} data"
+    *       ),
+    *      @OA\Response(
+    *          response=400,
+    *          description="Bad Request"
+    *      ),
+    *      @OA\Response(
+    *          response=401,
+    *          description="Unauthenticated",
+    *      ),
+    *      @OA\Response(
+    *          response=403,
+    *          description="Forbidden"
+    *      ),
+    *      @OA\Response(
+    *          response=404,
+    *          description="Not Found"
+    *      )
+    * )
+    */
+   public function show(${{{ $name|nameName }}}Id)
+   {
+       // user_can(['{{{ $name|name_name }}}.show']);
+
+       ${{{ $name|nameName }}} = {{{ $name|NameName }}}::with({{{ $name|NameName }}}::getRelationships())->findOrFail(${{{ $name|nameName }}}Id);
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='hasMany'): }}}
+       ${{{ $name|nameName }}}->{{{ $this.targetModel.name|name_name }}}_ids = collect(${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}})->pluck('id');
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+       ${{{ $name|nameName }}}->{{{ $this.targetModel.name|name_name }}}_ids = collect(${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}})->pluck('id');
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+       $resource = ${{{ $name|nameName }}}->toArray();
+       // $resource['lists'] = {{{ $name|NameName }}}::getLists();
+
+       return $this->responseSuccess(
+         '{{{ $display_name|title }}} data obtained!',
+         $resource,
+         false,
+         false,
+         200
+       );
+   }
+
+   /**
+    * @OA\PUT(
+    *   path="/api/{{{ $name|name-names }}}/{id}",
+    *   tags={"{{{ $name|NameNames }}}"},
+    *   summary="Update {{{ $display_name|lower }}}",
+    *   description="Returns updated {{{ $display_name|lower }}} data",
+    *   @OA\Parameter(
+    *     name="id",
+    *     description="{{{ $display_name|title }}} ID",
+    *     required=true,
+    *     in="path",
+    *     @OA\Schema(
+    *       type="integer"
+    *     )
+    *   ),
+    *   @OA\RequestBody(
+    *     required=true,
+    *     description="Returns updated new {{{ $display_name|lower }}}",
+    *     @OA\JsonContent(
+    *       type="object",
+    *       @OA\Property(
+    *         property="model",
+    *         type="object",
+    *         ref="#/components/schemas/{{{ $name|NameName }}}",
+    *       ),
+    *     ),
+    *   ),
+    *   @OA\Response(
+    *     response="201",
+    *     description="Successful book created",
+    *   ),
+    *   @OA\Response(
+    *     response="422",
+    *     description="Validation error",
+    *   ),
+    * )
+    */
+   public function update(${{{ $name|nameName }}}Id, Request $request)
+   {
+
+       // user_can(['{{{ $name|name_name }}}.update']);
+
+       ${{{ $name|nameName }}} = {{{ $name|NameName }}}::findOrFail(${{{ $name|nameName }}}Id);
+
+       $this->varidate($request, ${{{ $name|nameName }}});
+
+       $input = $request->input('model');
+
+{{{ foreach($schemas): }}}
+{{{ if($this.name=='password'): }}}
+               if( $input['{{{ $this.name|name_name }}}'] === ''){
+                   $input['{{{ $this.name|name_name }}}'] = ${{{ $name|nameName }}}->{{{ $this.name|name_name }}};
+               } elseif( $input['{{{ $this.name|name_name }}}'] !== ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} ){
+                   $input['{{{ $this.name|name_name }}}'] = bcrypt($input['{{{ $this.name|name_name }}}']);
+               }
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ foreach($schemas): }}}
+{{{ if($this.name=='code'): }}}
+       $input['code'] = $input['code'] ?? Str::slug($input['{{{ $parent.getRelationSchema().name|name_name }}}']);
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+       DB::beginTransaction();
+       try {
+         //update data
+         ${{{ $name|nameName }}}->update($input);
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='hasMany'): }}}
+         if (isset($input['{{{ $this.targetModel.name|name_names }}}']) && count($input['{{{ $this.targetModel.name|name_names }}}'])) {
+             {{{ if($module!=''): }}}\App\Modules\{{{ $module }}}\Models\{{{ else: }}}\App\Models\{{{ endif; }}}{{{ $this.targetModel.name|NameName }}}::where('{{{ $name|name_name }}}_id', ${{{ $name|nameName }}}Id)
+             ->update(['{{{ $name|name_name }}}_id' => null]);
+             foreach ($input['{{{ $this.targetModel.name|name_names }}}'] as ${{{ $this.targetModel.name|nameName }}}) {
+                 {{{ if($module!=''): }}}\App\Modules\{{{ $module }}}\Models\{{{ else: }}}\App\Models\{{{ endif; }}}{{{ $this.targetModel.name|NameName }}}::find(${{{ $this.targetModel.name|nameName }}}['id'])->update(['{{{ $name|name_name }}}_id' => ${{{ $name|nameName }}}->id]);
+             }
+         }
+         if (isset($input['{{{ $this.targetModel.name|name_names }}}']) && !count($input['{{{ $this.targetModel.name|name_names }}}'])) {
+             {{{ if($module!=''): }}}\App\Modules\{{{ $module }}}\Models\{{{ else: }}}\App\Models\{{{ endif; }}}{{{ $this.targetModel.name|NameName }}}::where('{{{ $name|name_name }}}_id', ${{{ $name|nameName }}}Id)
+                          ->update(['{{{ $name|name_name }}}_id' => null]);
+         }
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+        $request->input('model.{{{ $this.targetModel.name|name_name }}}_ids') ? ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}}()->sync($request->input('model.{{{ $this.targetModel.name|name_name }}}_ids')) : ${{{ $name|name_name }}}->{{{ $this.targetModel.name|nameNames }}}()->detach();
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+       } catch (Exception $exception) {
+         DB::rollBack();
+         return $this->responseError(
+           '' . $exception->getMessage(),
+           [
+             'message' => $exception->getMessage(),
+             'file' => $exception->getFile(),
+             'line' => $exception->getLine(),
+           ]
+         );
+       }
+       DB::commit();
+
+       return $this->responseSuccess(
+         '{{{ $display_name|title }}} updated!',
+         ${{{ $name|nameName }}}->toArray(),
+         false,
+         false,
+         202
+       );
+   }
+
+
+   /**
+    * @OA\DELETE(
+    *      path="/api/{{{ $name|name-names }}}/{id}",
+    *      tags={"{{{ $name|NameNames }}}"},
+    *      summary="Delete existing {{{ $display_name|lower }}}",
+    *      description="Delete a {{{ $display_name|lower }}} and returns it",
+    *      @OA\Parameter(
+    *          name="id",
+    *          description="{{{ $name|NameName }}} ID",
+    *          required=true,
+    *          in="path",
+    *          @OA\Schema(
+    *              type="integer"
+    *          )
+    *      ),
+    *      @OA\Response(
+    *          response=202,
+    *          description="Successful operation",
+    *          @OA\JsonContent()
+    *       ),
+    *      @OA\Response(
+    *          response=401,
+    *          description="Unauthenticated",
+    *      ),
+    *      @OA\Response(
+    *          response=403,
+    *          description="Forbidden"
+    *      ),
+    *      @OA\Response(
+    *          response=404,
+    *          description="Resource Not Found"
+    *      )
+    * )
+    */
+   public function destroy(${{{ $name|nameName }}}Id)
+   {
+
+       // user_can(['{{{ $name|name_name }}}.destroy']);
+
+       ${{{ $name|nameName }}} = {{{ $name|NameName }}}::findOrFail(${{{ $name|nameName }}}Id);
+       ${{{ $name|nameName }}}->delete();
+       return $this->responseSuccess(
+         '{{{ $display_name|title }}} deleted!',
+         ${{{ $name|nameName }}}->toArray(),
+         false,
+         false,
+         203
+       );
+   }
+
+   /**
+    * @OA\PUT(
+    *   path="/api/{{{ $name|name-names }}}/delete-multiple",
+    *   tags={"{{{ $name|NameNames }}}"},
+    *   summary="Delete {{{ $display_name|lowers }}}",
+    *   description="Returns {{{ $display_name|lowers }}} deleted",
+    *   @OA\RequestBody(
+    *     required=true,
+    *     description="Array of ids to delete {{{ $display_name|lowers }}}",
+    *     @OA\JsonContent(
+    *       type="object",
+    *       required={"ids"},
+    *       @OA\Property(
+    *         property="ids",
+    *         type="array",
+    *         example={0: 1, 1: 2},
+    *         @OA\Items(
+    *           type="number",
+    *         ),
+    *       ),
+    *     ),
+    *   ),
+    *   @OA\Response(
+    *     response="202",
+    *     description="Successful {{{ $display_name|lowers }}} deleted",
+    *   ),
+    *   @OA\Response(
+    *     response="422",
+    *     description="Validation error",
+    *   ),
+    * )
+    */
+   public function destroyMultiple(Request $request)
+   {
+       // user_can(['tag.destroy']);
+
+       if (!$request->get('ids') || !count($request->get('ids'))) {
+           return $this->responseError('Validation error', [
+               'errors' => [
+                   'ids' => 'No IDs found'
+               ]
+           ], 422);
+       }
+
+       if (count($request->get('ids'))) {
+           foreach ($request->get('ids') as $id) {
+               $tag = {{{ $name|NameName }}}::findOrFail($id);
+               $tag->delete();
+           }
+       }
+
+       return $this->responseSuccess(
+           '{{{ $display_name|titles }}} deleted!',
+           [],
+           false,
+           false,
+           203
+       );
+   }
+
+   /**
+    * @OA\GET(
+    *      path="/api/{{{ $name|name-names }}}/export",
+    *      tags={"{{{ $name|NameNames }}}"},
+    *      summary="Get xls file of all {{{ $name|nameNames }}}",
+    *      description="Returns list of all {{{ $name|nameNames }}} in a excel file",
+    *      @OA\Response(
+    *          response=200,
+    *          description="Successful get {{{ $name|nameNames }}} xls file"
+    *       ),
+    *      @OA\Response(
+    *          response=400,
+    *          description="Bad Request"
+    *      ),
+    *      @OA\Response(
+    *          response=401,
+    *          description="Unauthenticated",
+    *      ),
+    *      @OA\Response(
+    *          response=403,
+    *          description="Forbidden"
+    *      ),
+    *      @OA\Response(
+    *          response=404,
+    *          description="Not Found"
+    *      )
+    * )
+    */
+   public function export()  {
+       return \Maatwebsite\Excel\Facades\Excel::download(new {{{ $name|NameNames }}}Export(), '{{{ $name|name-names }}}.xlsx');
+   }
+
+   /**
+    * Varidate input data.
+    *
+    * @return array
+    */
+   public function varidate(Request $request, {{{ $name|NameName }}} ${{{ $name|nameName }}} = null)
+   {
+       $request->validate({{{ $name|NameName }}}::getValidateRule(${{{ $name|nameName }}}));
+   }
+
+
+// end section
+
+}

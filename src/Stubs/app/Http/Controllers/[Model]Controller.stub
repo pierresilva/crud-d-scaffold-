@@ -1,11 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+/**
+ * {{{ $name|NameName }}}
 
-use Illuminate\Support\Str;
-use App\{{{ $name|NameName }}};
+ */
+
+{{{ if($module!=''): }}}
+namespace App\Modules\{{{ $module }}}\Http\Controllers;
+{{{ else: }}}
+namespace App\Http\Controllers;
+{{{ endif; }}}
+
+{{{ if($module!=''): }}}
+namespace App\Modules\{{{ $module }}}\Models;
+{{{ else: }}}
+use App\Models\{{{ $name|NameName }}};
+{{{ endif; }}}
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class {{{ $name|NameName }}}Controller extends Controller
 {
@@ -25,31 +38,38 @@ class {{{ $name|NameName }}}Controller extends Controller
 
                 if($key !== 's'){
 
-                    $pettern = '#([^\.]*)\.?([^\.]*)_([^\._]*)#u';
-                    preg_match($pettern,$key,$m);
+                    $parts = preg_split('~:(?=[^:]*$)~', $key);
 
-                    $collumn_name = $m[1];
-                    $related_column_name = $m[2];
+                    $searchParts = preg_split('~\.(?=[^\.]*$)~', $parts[0]);
+                    // dd($parts, $searchParts);
 
-                    if($m[3] == 'eq'){
+                    $column_name = $searchParts[0];
+                    $related_column_name = isset($searchParts[1]) ? $searchParts[1] : '';
+
+                    $operatorSymbol = isset($parts[1]) ? $parts[1] : 'cont';
+
+                    if ($operatorSymbol == 'eq') {
                         $operator = '=';
-                    }elseif($m[3] == 'cont'){
+                    } elseif ($operatorSymbol == 'cont') {
                         $operator = 'like';
-                        $value = '%'.$value.'%';
-                    }elseif($m[3] == 'gt'){
+                        $value = '%' . $value . '%';
+                    } elseif ($operatorSymbol == 'gt') {
                         $operator = '>=';
-                    }elseif($m[3] == 'lt'){
+                    } elseif ($operatorSymbol == 'lt') {
                         $operator = '<=';
+                    } else {
+                        $operator = 'like';
+                        $value = '%' . $value . '%';
                     }
 
                     if( $related_column_name !== '' ){  // search at related table column
 
-                        ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->whereHas($collumn_name, function($q) use($related_column_name, $operator, $value){
+                        ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->whereHas($column_name, function($q) use($related_column_name, $operator, $value){
     						$q->where( $related_column_name, $operator, $value );
                         });
 
                     }else{
-                        ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->where( $collumn_name, $operator, $value );
+                        ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->where( $column_name, $operator, $value );
                     }
                 }
             }
@@ -80,7 +100,7 @@ class {{{ $name|NameName }}}Controller extends Controller
         // (3)paginate
         ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->paginate(10);
 
-		return view('{{{ $name|nameNames }}}.index', compact('{{{ $name|nameNames }}}'));
+		return view('{{{ $name|nameNames }}}.index', compact('{{{ $name|nameNames }}}'))->with( 'lists', {{{ $name|NameName }}}::getLists());
     }
 
 

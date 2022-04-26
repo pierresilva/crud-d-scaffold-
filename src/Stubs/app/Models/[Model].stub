@@ -1,0 +1,277 @@
+<?php
+
+/** {{{ $name|NameName }}} */
+
+{{{ if($module!=''): }}}
+namespace App\Modules\{{{ $module }}}\Models;
+{{{ else: }}}
+namespace App\Models;
+{{{ endif; }}}
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+{{{ if($use_soft_delete==true): }}}
+use Illuminate\Database\Eloquent\SoftDeletes;
+{{{ endif; }}}
+
+/**
+ *
+ * @OA\Schema(
+ *   required={
+{{{ foreach($schemas): }}}
+{{{ if($this.nullable==false): }}}
+ *       "{{{ $this.name|name_name }}}",
+{{{ endif; }}}
+{{{ endforeach; }}}
+ *   },
+ *   @OA\Xml(
+ *     name="{{{ $name|NameName }}}"
+ *   ),
+ *   @OA\Property(
+ *     property="id",
+ *     type="integer",
+ *     description="{{{ $name|NameName }}} ID",
+ *     readOnly="true",
+ *   ),
+{{{ foreach($schemas): }}}
+ *   @OA\Property(
+ *     property="{{{ $this.name|name_name }}}",
+ *     type="{{{ $this.type }}}",
+ *     description="{{{ $this.comment }}}",
+{{{ if($this.name=='code'): }}}
+ *     readOnly="true",
+{{{ endif; }}}
+ *   ),
+{{{ endforeach; }}}
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+ *   @OA\Property(
+ *     property="{{{ $this.targetModel.name|name_name }}}_ids",
+ *     type="array",
+ *     example={0: 1, 1: 2},
+ *     @OA\Items(
+ *       type="number",
+ *     ),
+ *   ),
+{{{ endif; }}}
+{{{ endforeach; }}}
+ *   @OA\Property(
+ *     property="created_at",
+ *     type="string",
+ *     format="date-time",
+ *     description="Initial creation timestamp",
+ *     readOnly="true"
+ *   ),
+ *   @OA\Property(
+ *     property="updated_at",
+ *     type="string",
+ *     format="date-time",
+ *     description="Last update timestamp",
+ *     readOnly="true"
+ *   ),
+ *   @OA\Property(
+ *     property="deleted_at",
+ *     type="string",
+ *     format="date-time",
+ *     description="Soft delete timestamp",
+ *     readOnly="true"
+ *   )
+ * )
+ *
+ * Class Book
+ *
+ */
+class {{{ $name|NameName }}} extends Model
+{
+{{{ if($use_soft_delete==true): }}}
+    use SoftDeletes;
+{{{ endif; }}}
+
+// generated section
+
+  protected $casts = [
+{{{ foreach($schemas): }}}
+{{{ if($this.type=='timestamp'): }}}
+    '{{{ $this.name|name_name }}}' => 'datetime:Y-m-d\TH:i:s',
+{{{ endif; }}}
+{{{ if($this.type=='datetime'): }}}
+    '{{{ $this.name|name_name }}}' => 'datetime:Y-m-d\TH:i:s',
+{{{ endif; }}}
+{{{ if($this.type=='boolean'): }}}
+    '{{{ $this.name|name_name }}}' => 'boolean',
+{{{ endif; }}}
+{{{ endforeach; }}}
+  ];
+
+  protected $table = '{{{ $name|name_names }}}';
+
+	// Mass Assignment
+	protected $fillable = [
+{{{ foreach($schemas): }}}
+	  '{{{ $this.name|name_name }}}',
+{{{ endforeach; }}}
+  ];
+
+{{{ if($use_soft_delete==true): }}}
+    protected $dates = ['deleted_at'];
+{{{ endif; }}}
+
+
+	// Validate Rule
+    public static function getValidateRule({{{ $name|NameName }}} ${{{ $name|name_name }}} = null){
+
+         if(!${{{ $name|name_name }}}){
+           $ignore_unique = '';
+         }else{
+           $ignore_unique = ',' . ${{{ $name|name_name }}}->id . ',id';
+         }
+        $table_name = "{{{ $name|name_names }}}";
+        $validation_rule = [
+
+{{{ foreach($schemas): }}}
+{{{ if($this.varidate!=''): }}}
+            'model.{{{ $this.name|name_name }}}' => '{{{ $this.varidate }}}',
+{{{ else: }}}
+            'model.{{{ $this.name|name_name }}}' => '{{{ $this.getVaridate() }}}{{{ if($parent.use_soft_delete==true): }}}{{{ if($this.unique==true): }}},deleted_at,NULL{{{ endif; }}}{{{ endif; }}}',
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+{{{ foreach($this.pivotModelSchemas): }}}
+{{{ if($this.varidate!=''): }}}
+        	'pivots.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}' => '{{{ $this.varidate }}}',
+{{{ else: }}}
+        	'pivots.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}' => '{{{ $this.getVaridate() }}}',
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+        ];
+        if(${{{ $name|name_name }}}){
+{{{ foreach($schemas): }}}
+{{{ if($this.input_type=='password'): }}}
+            $validation_rule['model.{{{ $this.name|name_name }}}'] = str_replace( 'required', '', $validation_rule['model.{{{ $this.name|name_name }}}'] );
+            $validation_rule['model.{{{ $this.name|name_name }}}'] = str_replace( '||', '|', $validation_rule['model.{{{ $this.name|name_name }}}'] );
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+{{{ foreach($this.pivotModelSchemas): }}}
+{{{ if($this.varidate!=''): }}}
+            $validation_rule['model.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}'] = str_replace( 'required', '', $validation_rule['model.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}'] );
+            $validation_rule['model.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}'] = str_replace( '||', '|', $validation_rule['model.{{{ $parent.targetModel.name|name_name }}}.*.{{{ $this.name|name_name }}}'] );
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}
+        }
+        return $validation_rule;
+    }
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='hasMany'): }}}
+	public function {{{ $this.targetModel.name|nameNames }}}() {
+		return $this->hasMany({{{ $this.targetModel.name|NameName }}}::class);
+	}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+	public function {{{ $this.targetModel.name|nameName }}}() {
+		return $this->belongsTo({{{ $this.targetModel.name|NameName }}}::class);
+	}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+	public function {{{ $this.targetModel.name|nameNames }}}() {
+		return $this->belongsToMany({{{ $this.targetModel.name|NameName }}}::class)
+{{{ if($this.implodePivotColumns()!=''): }}}
+		->withPivot({{{ $this.implodePivotColumns() }}})
+{{{ endif; }}}
+		->orderBy('id')
+		->withTimestamps();
+	}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+    public static function getRelationships()
+    {
+        return [
+{{{ foreach($relations): }}}
+{{{ if($this.type=='hasMany'): }}}
+            '{{{ $this.targetModel.name|nameNames }}}',
+{{{ endif; }}}
+{{{ if($this.type=='belongsTo'): }}}
+            '{{{ $this.targetModel.name|nameName }}}',
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+            '{{{ $this.targetModel.name|nameNames }}}',
+{{{ endif; }}}
+{{{ endforeach; }}}
+        ];
+    }
+
+	public static function getLists() {
+		$lists = [];
+{{{ foreach($relations): }}}
+		$lists['{{{ $this.targetModel.name|NameName }}}'] = {{{ $this.targetModel.name|NameName }}}::all();
+{{{ endforeach; }}}
+		return $lists;
+	}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+    public function scope{{{ $this.targetModel.name|NameName }}}By{{{ $this.targetModel.getRelationSchema().name|NameName }}}(Builder $query, ${{{ $this.targetModel.getRelationSchema().name|nameName }}})
+    {
+        return $query->whereHas('{{{ $this.targetModel.name|nameName }}}', function ($query) use (${{{ $this.targetModel.getRelationSchema().name|nameName }}}) {
+            $query->where('{{{ $this.targetModel.getRelationSchema().name|name_name }}}', ${{{ $this.targetModel.getRelationSchema().name|nameName }}});
+        });
+    }
+
+{{{ endif; }}}
+{{{ if($this.type=='hasMany'): }}}
+    public function scope{{{ $this.targetModel.name|NameNames }}}By{{{ $this.targetModel.getRelationSchema().name|NameName }}}(Builder $query, ${{{ $this.targetModel.getRelationSchema().name|nameName }}})
+    {
+        return $query->whereHas('{{{ $this.targetModel.name|nameNames }}}', function ($query) use (${{{ $this.targetModel.getRelationSchema().name|nameName }}}) {
+            $query->where('{{{ $this.targetModel.getRelationSchema().name|name_name }}}', ${{{ $this.targetModel.getRelationSchema().name|nameName }}});
+        });
+    }
+
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+    public function scope{{{ $this.targetModel.name|NameNames }}}By{{{ $this.targetModel.getRelationSchema().name|NameName }}}(Builder $query, ${{{ $this.targetModel.getRelationSchema().name|nameName }}})
+    {
+        return $query->whereHas('{{{ $this.targetModel.name|nameNames }}}', function ($query) use (${{{ $this.targetModel.getRelationSchema().name|nameName }}}) {
+            $query->where('{{{ $this.targetModel.getRelationSchema().name|name_name }}}', ${{{ $this.targetModel.getRelationSchema().name|nameName }}});
+        });
+    }
+
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+// end section
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function ($model) {
+            //
+        });
+        self::updating(function ($model) {
+            //
+        });
+        self::deleting(function ($model) {
+            //
+        });
+    }
+
+}

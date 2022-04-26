@@ -1,0 +1,50 @@
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {{{{ $name|NameNames }}}Service} from "../{{{ $name|name-names }}}.service";
+import {ActivatedRoute} from "@angular/router";
+import {{{{ $name|NameName }}}} from "../{{{ $name|name-name }}}";
+import {{{{ $name|NameNames }}}FormComponent} from "../{{{ $name|name-names }}}-form/{{{ $name|name-names }}}-form.component";
+import { Platform } from '@ionic/angular';
+import {SplitPanelService} from "../../@shared/services/split-panel.service";
+
+@Component({
+    selector: 'app-{{{ $name|name-names }}}-create',
+    templateUrl: './{{{ $name|name-names }}}-create.component.html',
+    styleUrls: ['./{{{ $name|name-names }}}-create.component.scss']
+})
+export class {{{ $name|NameNames }}}CreateComponent implements OnInit, AfterViewInit {
+
+    @ViewChild('{{{ $name|nameName }}}Form') {{{ $name|nameName }}}Form: {{{ $name|NameNames }}}FormComponent;
+
+    id: any = null;
+    public formValid = false;
+
+    constructor(
+        public {{{ $name|nameNames }}}Service: {{{ $name|NameNames }}}Service,
+        public route: ActivatedRoute,
+        public platform: Platform,
+        public splitPanel: SplitPanelService
+    ) {
+
+    }
+
+    ngOnInit(): void {
+        this.clearPosts();
+    }
+
+    ionViewWillEnter() {
+       this.splitPanel.show.next(true);
+    }
+
+    ngAfterViewInit() {
+        this.{{{ $name|nameName }}}Form.{{{ $name|nameNames }}}Form.valueChanges.subscribe((data) => {
+            this.{{{ $name|nameNames }}}Service.{{{ $name|nameNames }}}FormValid.next(this.{{{ $name|nameName }}}Form.{{{ $name|nameNames }}}Form.valid);
+        });
+    }
+
+    clearPosts() {
+        console.log('clear');
+        this.{{{ $name|nameNames }}}Service.create{{{ $name|NameName }}}();
+        this.{{{ $name|nameNames }}}Service.{{{ $name|nameName }}} = <{{{ $name|NameName }}}>{};
+    }
+
+}

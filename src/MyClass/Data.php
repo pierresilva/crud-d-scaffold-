@@ -1,86 +1,85 @@
 <?php
 
-/**
-Copyright (c) 2016 dog-ears
-
-This software is released under the MIT License.
-http://dog-ears.net/
-*/
-
-namespace pierresilva\CrudDscaffold\MyClass;
+namespace pierresilva\LaravelCrud\MyClass;
 
 use Illuminate\Filesystem\Filesystem;
-use pierresilva\CrudDscaffold\Commands\CrudDscaffoldSetupCommand;
-use pierresilva\CrudDscaffold\MyClass\Model;
-use pierresilva\CrudDscaffold\MyClass\Schema;
+use pierresilva\LaravelCrud\Commands\CrudSetupCommand;
+use pierresilva\LaravelCrud\MyClass\Model;
+use pierresilva\LaravelCrud\MyClass\Schema;
 
 class Data
 {
     private $files;     /* Filesystem */
-    private $command;   /* CrudDscaffoldSetupCommand */
+    private $command;   /* CrudDScaffoldSetupCommand */
     public $relations;
 
     /**
      * Create a new command instance.
      *
+     * @param CrudSetupCommand $command
      * @param Filesystem $files
-     * @param Composer $composer
      */
-    public function __construct( CrudDscaffoldSetupCommand $command, Filesystem $files )
+    public function __construct(CrudSetupCommand $command, Filesystem $files)
     {
         $this->command = $command;
         $this->files = $files;
         $this->relations = [];
     }
-    public function loadData(){
+
+    public function loadData()
+    {
 
         $file_path = $this->command->argument('filePath');
-        $this->command->info( 'reading setting file... ('. $file_path. ')' );
+        $this->command->info('reading setting file... (' . $file_path . ')');
 
         //setting.json - ext check
-        if( mb_substr($file_path, -5) !== '.json' ){
-            $this->command->error( 'setting file must be json file ('. $file_path. ')' );
+        if (mb_substr($file_path, -5) !== '.json') {
+            $this->command->error('setting file must be json file (' . $file_path . ')');
             exit();
         }
 
         // setting.json - exist check
-        if( !$this->files->exists( $file_path ) ){
-            $this->command->error( 'setting file is not found ('. $file_path. ')' );
+        if (!$this->files->exists($file_path)) {
+            $this->command->error('setting file is not found (' . $file_path . ')');
             exit();
         }
 
         //load file and delete comment
-        $rawdata = $this->files->get( $file_path );
-        $rawdata = preg_replace ( '#/\*[^\*]*\*/#' , '' , $rawdata );
-        $this->json_data = json_decode( $rawdata, true  ) ;
+        $rawdata = $this->files->get($file_path);
+        $rawdata = preg_replace('#/\*[^\*]*\*/#', '', $rawdata);
+        $this->json_data = json_decode($rawdata, true);
 
         //parse check
-        if( !$this->json_data ){
-            $this->command->error( 'json parse error! check your setting file  ('. $file_path. ')' );
+        if (!$this->json_data) {
+            $this->command->error('json parse error! check your setting file  (' . $file_path . ')');
             exit();
-        }else{
+        } else {
             $this->convertData();
         }
     }
 
-    public function convertData(){
+    public function convertData()
+    {
         $this->app_type = $this->json_data['app_type'];
         $this->use_laravel_auth = $this->json_data['use_laravel_auth'];
         $this->tool = $this->json_data['tool'];
 
-        foreach( $this->json_data['models'] as $model ){
+        foreach ($this->json_data['models'] as $model) {
             $this->models[] = new Model($model);
         }
 
         $this->prepareRelationship();
     }
 
-    public function prepareRelationship(){
-        foreach( $this->models as $model ){
-//echo('★---'.$model->name.' check start---★'."\n");
-            if( !$model->is_pivot ){    // normal model
-                foreach( $model->schemas as $schema ){
-                    if( $schema->belongsto === '' ){ continue; }
+    public function prepareRelationship()
+    {
+        foreach ($this->models as $model) {
+            //echo('★---'.$model->name.' check start---★'."\n");
+            if (!$model->is_pivot) {    // normal model
+                foreach ($model->schemas as $schema) {
+                    if ($schema->belongsto === '') {
+                        continue;
+                    }
 
                     $type = 'belongsTo';
                     $originalModel = $model;
@@ -98,19 +97,19 @@ class Data
                     $this->relations[] = $relation;
                     $this->getModelByName($schema->belongsto)->relations[] = $relation;
                 }
-            }else{  // pivot model
+            } else {  // pivot model
                 $type = 'belongsToMany';
                 $originalModel = null;
                 $targetModel = null;
                 $pivotModel = $model;
                 $pivotModelSchemas = [];
-                foreach( $model->schemas as $schema ){
-                    if($schema->belongsto === ''){
-                        $pivotModelSchemas[]  = $schema;
-                    }else{
-                        if( $originalModel === null ){
+                foreach ($model->schemas as $schema) {
+                    if ($schema->belongsto === '') {
+                        $pivotModelSchemas[] = $schema;
+                    } else {
+                        if ($originalModel === null) {
                             $originalModel = $this->getModelByName($schema->belongsto);
-                        }else{
+                        } else {
                             $targetModel = $this->getModelByName($schema->belongsto);
                         }
                     }
@@ -119,19 +118,31 @@ class Data
                 $this->relations[] = $relation;
                 $originalModel->relations[] = $relation;
 
-                $relation = new Relation($type, $targetModel, $originalModel,  $pivotModel, $pivotModelSchemas);
+                $relation = new Relation($type, $targetModel, $originalModel, $pivotModel, $pivotModelSchemas);
                 $this->relations[] = $relation;
                 $targetModel->relations[] = $relation;
             }
         }
     }
 
-    public function getModelByName( $name ){
-        $result = array_filter( $this->models, function($model) use($name){
+    public function getModelByName($name)
+    {
+        $result = array_filter($this->models, function ($model) use ($name) {
             return $model->name === $name;
         });
-        if( count($result)===0 ){
-            throw new \Exception('getModelByName('.$name.') return no model!');
+        if (count($result) === 0) {
+            throw new \Exception('getModelByName(' . $name . ') return no model!');
+        }
+        return array_values($result)[0];
+    }
+
+    public function getModelById($id)
+    {
+        $result = array_filter($this->models, function ($model) use ($id) {
+            return $model->id === $id;
+        });
+        if (count($result) === 0) {
+            throw new \Exception('getModelById(' . $id . ') return no model!');
         }
         return array_values($result)[0];
     }

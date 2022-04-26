@@ -1,0 +1,21 @@
+<mat-sidenav #sidenav
+             [disableClose]="true"
+             style="width: 100%;"
+             mode="over"
+             position="end">
+  <div layout="column"
+       layout-fill>
+    <mat-toolbar style="position: fixed;">
+      <button mat-icon-button
+              (click)="{{{ $name|nameNames }}}ListComponent.router.navigateByUrl('/admin/{{{ $name|name-names }}}'); sidenav.close(); {{{ $name|nameNames }}}ListComponent.{{{ $name|nameName }}}Service.model ={id: 0}">
+        <mat-icon>close</mat-icon>
+      </button>
+      {{ {{{ $name|nameNames }}}ListComponent.{{{ $name|nameName }}}Service.model.id ? ('Edit' | translate) + ' ' + ('{{{ $display_name }}}' | translate) : ('Create' | translate) + ' ' + ('{{{ $display_name }}}' | translate) }}
+    </mat-toolbar>
+    <div flex
+         [ngStyle]="{marginTop: layoutService.isMobile ? '56px' : '64px'}"
+         class="mat-content">
+      <app-{{{ $name|name-names }}}-form></app-{{{ $name|name-names }}}-form>
+    </div>
+  </div>
+</mat-sidenav>

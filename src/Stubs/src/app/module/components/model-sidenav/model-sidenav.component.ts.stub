@@ -1,0 +1,24 @@
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Router} from "@angular/router";
+import {{{{ $name|NameNames }}}ListComponent} from "@app/admin/{{{ $name|name-names }}}/components/{{{ $name|name-names }}}-list/{{{ $name|name-names }}}-list.component";
+import {AdminLayoutServiceService} from "@app/admin/@layout/services/admin-layout-service.service";
+
+@Component({
+  selector: 'app-{{{ $name|name-names }}}-sidenav',
+  templateUrl: './{{{ $name|name-names }}}-sidenav.component.html',
+  styleUrls: ['./{{{ $name|name-names }}}-sidenav.component.scss']
+})
+export class {{{ $name|NameNames }}}SidenavComponent implements OnInit {
+
+  @ViewChild('sidenav') sidenav: any;
+
+  constructor(
+    public router: Router,
+    public layoutService: AdminLayoutServiceService,
+    public {{{ $name|nameNames }}}ListComponent: {{{ $name|NameNames }}}ListComponent
+  ) { }
+
+  ngOnInit(): void {
+  }
+
+}

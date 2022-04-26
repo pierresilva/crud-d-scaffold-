@@ -1,13 +1,6 @@
 <?php
 
-/**
-Copyright (c) 2016 dog-ears
-
-This software is released under the MIT License.
-http://dog-ears.net/
-*/
-
-namespace pierresilva\CrudDscaffold\MyClass;
+namespace pierresilva\LaravelCrud\MyClass;
 
 class Model
 {
@@ -15,15 +8,21 @@ class Model
 
     public function __construct( $model )
     {
+        // dd($model);
         $this->id = $model['id'];
         $this->name = $model['name'];
         $this->display_name = $model['display_name'];
         $this->use_soft_delete = $model['use_soft_delete'];
         $this->is_pivot = $model['is_pivot'];
         $this->schema_id_for_relation = $model['schema_id_for_relation'];
+        $this->description = $model['description'] ?? '';
+        $this->migrationNumber = null;
+        $this->module = $model['module'];
+        $this->column = null;
+        $this->model = $this;
 
         foreach( $model['schemas'] as $schema ){
-            $this->schemas[] = new Schema($schema);
+            $this->schemas[] = new Schema($schema, $model);
         }
         $this->relations = [];
     }
@@ -46,10 +45,11 @@ class Model
             return $schema->id === $id;
         }));
         if( $result===FALSE ){
-            throw new \Exception('getSchemaByName('.$name.') return no schema!');
+            throw new \Exception('getSchemaById(' . $id . ') return no schema!');
         }
         return $result;
     }
+
     public function getRelationSchema(){
         return $this->getSchemaById( $this->schema_id_for_relation );
     }

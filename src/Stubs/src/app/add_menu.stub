@@ -1,0 +1,16 @@
+{{{ foreach($models): }}}
+{{{ if($this.name!='user'): }}}
+{{{ if($this.is_pivot==false): }}}
+                    <ion-item [routerLinkActive]="'selected'"
+                              [routerLink]="'/{{{ $this.name|name-names }}}'"
+                              *ngIf="auth.userIs(['super.admin', 'admin'])"
+                              lines="none"
+                              detail="false">
+                        <ion-icon slot="start"
+                                  ios="bookmark-outline"
+                                  md="bookmark-sharp"></ion-icon>
+                        <ion-label>{{{ $this.display_name }}}</ion-label>
+                    </ion-item>
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}

@@ -1,0 +1,139 @@
+import {Injectable} from '@angular/core';
+import {Router} from "@angular/router";
+import {ApiService} from "../@shared/services/api.service";
+import { {{{ $name|NameName }}}, {{{ $name|NameName }}}Lists } from "./{{{ $name|name-name }}}";
+import {Meta} from "../@shared/interfaces/meta";
+import {AlertService} from "../@shared/services/alert.service";
+import {ToastService} from "../@shared/services/toast.service";
+import {NavigationService} from '../@shared/services/navigation.service'
+import {BehaviorSubject} from "rxjs";
+
+declare var $: any;
+
+@Injectable({
+    providedIn: 'root'
+})
+export class {{{ $name|NameNames }}}Service {
+
+    public {{{ $name|nameNames }}}Url = '{{{ $name|name-names }}}';
+    public {{{ $name|nameNames }}}FormValid = new BehaviorSubject<boolean>(false);
+
+    public {{{ $name|nameNames }}}: {{{ $name|NameName }}}[] = [];
+    public {{{ $name|nameName }}}: {{{ $name|NameName }}} = <{{{ $name|NameName }}}>{};
+    public {{{ $name|nameName }}}Lists: {{{ $name|NameName }}}Lists = {};
+
+    public searchValue = '';
+    public perPage = 10;
+
+    public meta: Meta = null;
+
+    public page = 1;
+
+    public pagesContent = document.getElementById('pages-content');
+
+    constructor(
+        public api: ApiService,
+        public alert: AlertService,
+        public toast: ToastService,
+        public router: Router,
+        private navigation: NavigationService,
+    ) {
+    }
+// generated section
+    public get{{{ $name|NameNames }}}(page: any = this.page, perPage: any = this.perPage) {
+
+        this.api.get(this.{{{ $name|nameNames }}}Url + '?page=' + page + '&perPage=' + perPage + '&q[{{{ $model.getRelationSchema().name|name_name }}}:cont]=' + this.searchValue)
+            .subscribe(
+                (res: any) => {
+                    // @ts-ignore
+                    document.getElementById('pages-content').scrollToTop(300);
+                    this.{{{ $name|nameNames }}} = res.data;
+                    this.{{{ $name|nameName }}}Lists = res.lists;
+                    this.meta = res.meta;
+                },
+                (err: any) => {
+                    console.error(err);
+                }
+            );
+    }
+
+    public edit{{{ $name|NameName }}}(id: any) {
+        this.api.get(this.{{{ $name|nameNames }}}Url + '/' + id + '/edit')
+            .subscribe(
+                (res: any) => {
+                    this.{{{ $name|nameName }}} = res.data.model;
+                    this.{{{ $name|nameName }}}Lists = res.lists;
+                },
+                (err: any) => {
+                    console.error(err);
+                }
+            );
+    }
+
+    public update{{{ $name|NameName }}}() {
+        this.api.put(this.{{{ $name|nameNames }}}Url + '/' + this.{{{ $name|nameName }}}.id, {
+            model: this.{{{ $name|nameName }}},
+            pivots: {
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+                {{{ $this.targetModel.name|name_name }}}: this.{{{ $name|nameName }}}.{{{ $this.targetModel.name|name_names }}},
+{{{ endif; }}}
+{{{ endforeach; }}}
+            }
+        }).subscribe(
+            (res: any) => {
+                this.toast.present(res.message, 'toast-success', 'top');
+                this.navigation.back();
+                this.get{{{ $name|NameNames }}}(1);
+            }
+        );
+    }
+
+    public create{{{ $name|NameName }}}() {
+        this.api.get(this.{{{ $name|nameNames }}}Url + '/create')
+            .subscribe(
+                (res: any) => {
+                    this.{{{ $name|nameName }}} = <{{{ $name|NameName }}}>{};
+                    this.{{{ $name|nameName }}}Lists = res.lists
+                }
+            );
+    }
+
+    public store{{{ $name|NameName }}}() {
+        this.api.post(this.{{{ $name|nameNames }}}Url, {
+            model: this.{{{ $name|nameName }}},
+            pivots: {
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+                {{{ $this.targetModel.name|name_name }}}: this.{{{ $name|nameName }}}.{{{ $this.targetModel.name|name_names }}},
+{{{ endif; }}}
+{{{ endforeach; }}}
+            }
+        }).subscribe(
+            (res: any) => {
+                this.toast.present(res.message, 'toast-success', 'top');
+                this.navigation.back();
+                this.get{{{ $name|NameNames }}}(1);
+            }
+        );
+    }
+
+    public async delete{{{ $name|NameName }}}(id: any) {
+        const confirm = await this.alert.confirmation(
+            'Desea eliminar el item?'
+        );
+        if (confirm) {
+            this.api.delete(this.{{{ $name|nameNames }}}Url + '/' + id, {})
+                .subscribe(
+                    (res: any) => {
+                        this.toast.present(res.message, 'toast-success', 'top');
+                        this.get{{{ $name|NameNames }}}(1);
+                    }
+                );
+        } else {
+            return;
+        }
+    }
+// end generated section
+
+}

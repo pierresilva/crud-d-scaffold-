@@ -1,0 +1,86 @@
+<?php
+
+/**
+ * {{{ $name|NameName }}}
+
+ */
+
+{{{ if($module!=''): }}}
+namespace App\Modules\{{{ $module }}}\Exports;
+{{{ else: }}}
+namespace App\Exports;
+{{{ endif; }}}
+
+
+{{{ if($module!=''): }}}
+use App\Modules\{{{ $module }}}\Models\{{{ $name|NameName }}};
+{{{ else: }}}
+use App\Models\{{{ $name|NameName }}};
+{{{ endif; }}}
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+
+class {{{ $name|NameNames }}}Export implements FromCollection, ShouldAutoSize, WithHeadings
+{
+    /**
+    * @return \Illuminate\Support\Collection
+    */
+    public function collection()
+    {
+        $items = {{{ $name|NameName }}}::with({{{ $name|NameName }}}::getRelationships())->get();
+        if (!$items) {
+            return new Collection();
+        }
+        return $items;
+    }
+
+    public function headings(): array
+    {
+
+        $item = {{{ $name|NameName }}}::first();
+
+        $attributes = array_keys($item->getAttributes());
+
+        $names = [];
+        foreach ($attributes as $attribute) {
+            $names[] = mb_strtoupper($attribute);
+        }
+
+        $relationships = {{{ $name|NameName }}}::getRelationships();
+
+        foreach ($relationships as $relationship) {
+            $names[] = mb_strtoupper($relationship);
+        }
+
+        return $names;
+    }
+
+    public function prepareRows($rows): array
+    {
+        return array_map(function ($model) {
+
+            $relationships = {{{ $name|NameName }}}::getRelationships();
+            foreach ($relationships as $relationship) {
+                if ($model->{$relationship}) {
+                    $relationString = '';
+                    if ($model->{$relationship} instanceof Collection) {
+                        $index = 0;
+                        foreach ($model->{$relationship} as $relation) {
+                            $relationString .= ($relation->name ?: $relation->title) . ((($index + 1) < $model->{$relationship}->count()) ? ', ' : '');
+                            $index++;
+                        }
+                    } else {
+                        $relationString = ($model->{$relationship}->name ?: $model->{$relationship}->title);
+                    }
+
+                    $model->{$relationship} = $relationString;
+                }
+            }
+
+            return $model;
+        }, $rows);
+    }
+
+}

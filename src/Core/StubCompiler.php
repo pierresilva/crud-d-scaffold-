@@ -1,15 +1,8 @@
 <?php
 
-/**
-Copyright (c) 2016 dog-ears
+namespace pierresilva\LaravelCrud\Core;
 
-This software is released under the MIT License.
-http://dog-ears.net/
-*/
-
-namespace pierresilva\CrudDscaffold\Core;
-
-use pierresilva\CrudDscaffold\Core\NameResolver;
+use pierresilva\LaravelCrud\Core\NameResolver ;
 
 class StubCompiler
 {
@@ -24,11 +17,14 @@ class StubCompiler
     {
         $this->stub_txt = $stub_txt;
         $this->root_vars = $root_vars;
+        $this->debug_flag = true;
     }
 
     public function compile(){
 
-        if($this->debug_flag){ echo('[func]compile'."\n"); }
+        if($this->debug_flag) {
+            echo('[func]compile'."\n");
+        }
         $result = '';
 
         //delete return before tag
@@ -72,7 +68,7 @@ class StubCompiler
             //var
             if( preg_match ( $pattern_var , $local_stub_array[$i], $m ) ){
 
-                //if($this->debug_flag){ echo ('[depth:'.$depth.']var : ['.implode(',',$m)."]"."\n"); }
+                // if($this->debug_flag){ echo ('[depth:'.$depth.']var : ['.implode(',',$m)."]"."\n"); }
 
                 if( $depth > 0  ){
                     $new_local_stub_array[] = $local_stub_array[$i];
@@ -81,7 +77,7 @@ class StubCompiler
                     $pipe = $m[2];
                     $result .= $this->compile_var( $var_path, $pipe, $this_path );
 
-                    if($this->debug_flag){ echo ($local_stub_array[$i]. ' ---> '.$this->compile_var( $var_path, $pipe, $this_path ) ."\n"); }
+                    if($this->debug_flag){ echo ($local_stub_array[$i]. ' ---> '.$this->compile_var( $var_path, $pipe, $this_path ) ." OK!\n"); }
                 }
 
             //if
@@ -347,7 +343,7 @@ class StubCompiler
         foreach ($keys_array as $key) {
             if( is_array($current) ){
                 if( !array_key_exists($key,$current) ){
-                    throw new \Exception('$current doesn\'t has key:'.$key);
+                    throw new \Exception('$current doesn\'t has key: '.$key);
                 }
                 $current = $current[$key];
             }elseif( is_object($current) ){
@@ -356,14 +352,14 @@ class StubCompiler
 
                     $key2 = rtrim($key,'()');
                     if( !method_exists( $current,$key2 ) ){
-                        throw new \Exception( get_class($current). ' doesn\'t has method:'.$key);
+                        throw new \Exception( get_class($current). ' doesn\'t has method: '.$key);
                     }
                     $current = $current->$key2();
 
                 }else{  // case - $key is property
 
                     if( !property_exists($current,$key) ){
-                        throw new \Exception(get_class($current). ' doesn\'t has property:'.$key);
+                        throw new \Exception(get_class($current). ' doesn\'t has property: '.$key);
                     }
                     $current = $current->$key;
                 }

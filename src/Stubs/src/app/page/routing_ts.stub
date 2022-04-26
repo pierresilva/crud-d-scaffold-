@@ -1,0 +1,56 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+
+import { {{{ $name|NameNames }}}Page } from './{{{ $name|name-names }}}.page';
+import {{{{ $name|NameNames }}}EditComponent} from "./{{{ $name|name-names }}}-edit/{{{ $name|name-names }}}-edit.component";
+import {{{{ $name|NameNames }}}CreateComponent} from "./{{{ $name|name-names }}}-create/{{{ $name|name-names }}}-create.component";
+import {{{{ $name|NameNames }}}ListComponent} from "./{{{ $name|name-names }}}-list/{{{ $name|name-names }}}-list.component";
+
+const routes: Routes = [
+// generated section
+    {
+        path: '',
+        data: {
+            title: '{{{ $display_name }}}',
+            roles: ['admin'],
+            // permissions: []
+        },
+        component: {{{ $name|NameNames }}}Page
+    },
+    {
+        path: 'list',
+        data: {
+            title: '{{{ $display_name }}}',
+            roles: ['admin'],
+            // permissions: []
+        },
+        component: {{{ $name|NameNames }}}ListComponent
+    },
+    {
+      path: 'create',
+      data: {
+          title: '{{{ $display_name }}}',
+          roles: ['admin'],
+          // permissions: []
+      },
+      component: {{{ $name|NameNames }}}CreateComponent
+    },
+    {
+        path: ':id/edit',
+        data: {
+            title: '{{{ $display_name }}}',
+            roles: ['admin'],
+            // permissions: []
+        },
+        component: {{{ $name|NameNames }}}EditComponent
+    },
+];
+// end generated section
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [
+    RouterModule
+  ],
+})
+export class {{{ $name|NameNames }}}PageRoutingModule {}

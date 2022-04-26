@@ -1,0 +1,167 @@
+<app-main-header title="{{'{{{ $display_name }}}' | titlecase}}"
+                 primaryLink="{{{ $name|name-names }}}/create"
+                 primaryText="Crear {{'{{{ $display_name }}}' | lowercase}}"
+                 primaryIcon="add-circle-outline"></app-main-header>
+
+<ion-content id="pages-content">
+
+    <ion-searchbar showCancelButton="focus"
+                       [cancelButtonText]="'Cancelar'"
+                       [placeholder]="'Buscar ' + ('{{{ $display_name }}}' | lowercase )"
+                       (ionCancel)="this.{{{ $name|nameNames }}}Service.searchValue = ''; {{{ $name|nameNames }}}Service.get{{{ $name|NameNames }}}()"
+                       (keyup.enter)="{{{ $name|nameNames }}}Service.get{{{ $name|NameNames }}}()"
+                       [(ngModel)]="{{{ $name|nameNames }}}Service.searchValue"></ion-searchbar>
+
+    <ng-container *ngIf="!(loading.loading | async) && {{{ $name|nameNames }}}Service.{{{ $name|nameNames }}}?.length">
+        <ion-card *ngFor="let {{{ $name|nameName }}} of {{{ $name|nameNames }}}Service.{{{ $name|nameNames }}}; let index = index">
+            <ion-list>
+{{{ foreach($schemas): }}}
+{{{ if($this.belongsto==''): }}}
+{{{ if($this.show_in_list==true): }}}
+{{{ if($this.input_type=='date'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text">{{ {{{ $name|nameName }}}?.{{{ $this.name|name_name }}} | dateFormat:'DD/MM/YYYY' }}</div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ if($this.input_type=='datetime'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text">{{ {{{ $name|nameName }}}?.{{{ $this.name|name_name }}} | dateFormat:'DD/MM/YYYY HH:mm' }}</div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ if($this.input_type=='time'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text">{{ {{{ $name|nameName }}}?.{{{ $this.name|name_name }}} | timeFormat:'HH:mm' }}</div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ if($this.input_type=='text'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text">{{ {{{ $name|nameName }}}?.{{{ $this.name|name_name }}} }}</div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ if($this.input_type=='number'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text">{{ {{{ $name|nameName }}}?.{{{ $this.name|name_name }}} }}</div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ if($this.input_type=='textarea'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text">{{ {{{ $name|nameName }}}?.{{{ $this.name|name_name }}} }}</div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ if($this.input_type=='html'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text">{{ {{{ $name|nameName }}}?.{{{ $this.name|name_name }}} | stripHtml }}</div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ if($this.input_type=='select'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text">{{ {{{ $name|nameName }}}?.{{{ $this.name|name_name }}} | status }}</div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ if($this.input_type=='checkbox'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text">{{ {{{ $name|nameName }}}?.{{{ $this.name|name_name }}}  ? 'Si' : 'No' }}</div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ if($this.input_type=='file'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text"><a *ngIf="{{{ $name|nameName }}}?.{{{ $this.name|name_name }}}" [href]="{{{ $name|nameName }}}.{{{ $this.name|name_name }}}" target="_blank">Ver archivo</a><span *ngIf="!{{{ $name|nameName }}}.{{{ $this.name|name_name }}}">Sin archivo</span></div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.targetModel.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text"><a routerLink="/{{{ $this.targetModel.name|name-names }}}/{{ {{{ $name|nameName }}}?.{{{ $this.targetModel.name|name_name }}}?.id }}/edit">{{ {{{ $name|nameName }}}?.{{{ $this.targetModel.name|name_name }}}?.{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}</a></div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.targetModel.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text">
+                            <ng-container *ngIf="{{{ $name|nameName }}}?.{{{ $this.targetModel.name|name_names }}}?.length">
+                                <ng-container *ngFor="let {{{ $this.targetModel.name|nameName }}} of {{{ $name|nameName }}}?.{{{ $this.targetModel.name|name_names }}}; let last = last">
+                                    <a routerLink="/{{{ $this.targetModel.name|name-names }}}/{{ {{{ $this.targetModel.name|nameName }}}?.id }}/edit">{{ {{{ $this.targetModel.name|nameName }}}?.{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}</a><span *ngIf="!last">, </span>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ if($this.type=='hasMany'): }}}
+                    <ion-item class="item-transparent">
+                        <ion-label position="fixed"><b>{{ '{{{ $this.targetModel.display_name }}}' | titlecase }}</b></ion-label>
+                        <div class="wrap-text">
+                            <ng-container *ngIf="{{{ $name|nameName }}}?.{{{ $this.targetModel.name|name_names }}}?.length">
+                                <ng-container *ngFor="let {{{ $this.targetModel.name|nameName }}} of {{{ $name|nameName }}}?.{{{ $this.targetModel.name|name_names }}}; let last = last">
+                                    <a routerLink="/{{{ $this.targetModel.name|name-names }}}/{{ {{{ $this.targetModel.name|nameName }}}?.id }}/edit">{{ {{{ $this.targetModel.name|nameName }}}?.{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}</a><span *ngIf="!last">, </span>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </ion-item>
+{{{ endif; }}}
+{{{ endforeach; }}}
+            </ion-list>
+            <ion-footer>
+                <ion-row>
+                    <ion-col class="ion-text-center">
+                        <ion-button color="success" size="small" fill="clear" [routerLink]="'/{{{ $name|name-names }}}/' + {{{ $name|nameName }}}?.id + '/edit'">
+                            <ion-icon name="create-outline"></ion-icon>
+                            <div>Editar</div>
+                        </ion-button>
+                    </ion-col>
+                    <ion-col class="ion-text-center">
+                        <ion-button color="danger" size="small" fill="clear" (click)="{{{ $name|nameNames }}}Service.delete{{{ $name|NameName }}}({{{ $name|nameName }}}?.id)">
+                            <ion-icon name="trash-outline"></ion-icon>
+                            <div>Eliminar</div>
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-footer>
+        </ion-card>
+    </ng-container>
+
+    <ng-container *ngIf="!(loading.loading | async) && !{{{ $name|nameNames }}}Service.{{{ $name|nameNames }}}?.length">
+        <ion-item>
+            <ion-icon class="text-warning" name="warning-outline" slot="start"></ion-icon>
+            <ion-label><h2>No se encontraron {{'{{{ $display_name }}}' | titlecase}}</h2></ion-label>
+            <ion-button [routerLink]="'/{{{ $name|name-names }}}/create'" fill="outline" color="success" slot="end">
+                Crear {{'{{{ $display_name }}}' | titlecase}}
+                <ion-icon name="add-circle-outline" slot="end"></ion-icon>
+            </ion-button>
+        </ion-item>
+    </ng-container>
+
+</ion-content>
+
+<ion-footer class="lists-footer">
+    <ion-row *ngIf="{{{ $name|nameNames }}}Service.meta">
+        <ion-col class="ion-text-center" size="12">
+            <ion-button (click)="{{{ $name|nameNames }}}Service.get{{{ $name|NameNames }}}({{{ $name|nameNames }}}Service.meta.current_page - 1)"
+                        [disabled]="{{{ $name|nameNames }}}Service.meta.current_page == 1"
+                        fill="clear">
+                <ion-icon slot="end" name="play-outline" style="transform: rotate(180deg);"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" [disabled]="true"> Pag: {{{{{ $name|nameNames }}}Service.meta.current_page}}
+                /{{{{{ $name|nameNames }}}Service.meta.last_page}} {{{{{ $name|nameNames }}}Service.meta.from}}-{{{{{ $name|nameNames }}}Service.meta.to}}
+                /{{{{{ $name|nameNames }}}Service.meta.total}} </ion-button>
+            <ion-button (click)="{{{ $name|nameNames }}}Service.get{{{ $name|NameNames }}}({{{ $name|nameNames }}}Service.meta.current_page + 1)"
+                        [disabled]="{{{ $name|nameNames }}}Service.meta.current_page == {{{ $name|nameNames }}}Service.meta.last_page"
+                        fill="clear">
+                <ion-icon slot="start" name="play-outline"></ion-icon>
+            </ion-button>
+        </ion-col>
+    </ion-row>
+</ion-footer>

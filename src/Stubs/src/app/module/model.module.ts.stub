@@ -1,0 +1,25 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { {{{ $name|NameNames }}}RoutingModule } from './{{{ $name|name-names }}}-routing.module';
+import { {{{ $name|NameNames }}}ListComponent } from './components/{{{ $name|name-names }}}-list/{{{ $name|name-names }}}-list.component';
+import { {{{ $name|NameNames }}}FormComponent } from './components/{{{ $name|name-names }}}-form/{{{ $name|name-names }}}-form.component';
+import { {{{ $name|NameNames }}}SidenavComponent } from './components/{{{ $name|name-names }}}-sidenav/{{{ $name|name-names }}}-sidenav.component';
+import { {{{ $name|NameNames }}}Component } from './{{{ $name|name-names }}}.component';
+import { SharedModule } from "@shared";
+
+
+@NgModule({
+  declarations: [
+    {{{ $name|NameNames }}}ListComponent,
+    {{{ $name|NameNames }}}FormComponent,
+    {{{ $name|NameNames }}}SidenavComponent,
+    {{{ $name|NameNames }}}Component,
+  ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    {{{ $name|NameNames }}}RoutingModule
+  ]
+})
+export class {{{ $name|NameNames }}}Module { }

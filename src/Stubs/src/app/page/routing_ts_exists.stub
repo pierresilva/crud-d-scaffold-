@@ -1,0 +1,19 @@
+// generated section
+    {
+        path: '',
+        component: {{{ $name|NameNames }}}Page
+    },
+    {
+        path: 'list',
+        component: {{{ $name|NameNames }}}ListComponent
+    },
+    {
+      path: 'create',
+      component: {{{ $name|NameNames }}}CreateComponent
+    },
+    {
+        path: ':id/edit',
+        component: {{{ $name|NameNames }}}EditComponent
+    },
+];
+// end generated section

@@ -1,0 +1,65 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+{{{ if($is_pivot==true): }}}
+class Alter{{{ $migrationNumber }}}{{{ $name|NameName }}}Table extends Migration
+{{{ else: }}}
+class Alter{{{ $migrationNumber }}}{{{ $name|NameNames }}}Table extends Migration
+{{{ endif; }}}
+
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::disableForeignKeyConstraints();
+{{{ if($is_pivot==true): }}}
+        Schema::table('{{{ $name|name_name }}}', function (Blueprint $table) {
+{{{ else: }}}
+        Schema::table('{{{ $name|name_names }}}', function (Blueprint $table) {
+{{{ endif; }}}
+            $table->bigIncrements('id');
+            $table->timestamps();
+
+{{{ foreach($schemas): }}}
+{{{ if($this.belongsto!=''): }}}
+{{{ $this.getUniqueId() }}}
+            $table->unsignedBigInteger('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
+            $table->foreign('{{{ $this.name|name_name }}}', '{{{ $this.randomNumber }}}_foreign') //
+                ->references('id')
+                ->on('{{{ $this.belongsto|name_names }}}')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+{{{ else: }}}
+            $table->{{{ $this.type }}}('{{{ $this.name|name_name }}}'{{{ if($this.type=='float'): }}}, 12, 3{{{ endif; }}}){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ if($use_soft_delete==true): }}}
+            $table->softDeletes();
+{{{ endif; }}}
+        });
+        Schema::enableForeignKeyConstraints();
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+{{{ if($is_pivot==true): }}}
+        Schema::dropIfExists('{{{ $name|name_name }}}');
+{{{ else: }}}
+        Schema::dropIfExists('{{{ $name|name_names }}}');
+{{{ endif; }}}
+        Schema::enableForeignKeyConstraints();
+    }
+}

@@ -1,0 +1,316 @@
+<div flex
+     class="pad">
+
+  <form #{{{ $name|nameNames }}}Form="ngForm"
+        (ngSubmit)="{{{ $name|nameName }}}Service.save()"
+        novalidate>
+
+{{{ foreach($schemas): }}}
+{{{ if($this.show_in_detail==true): }}}
+{{{ if($this.input_type=='select'): }}}
+{{{ if($this.custom_options!=''): }}}
+{{{ $this.getSelectOptions() }}}
+<mat-form-field appearance="outline"
+                style="width: 100%;">
+  <mat-label><span translate>{{{ $this.display_name }}}</span></mat-label>
+  <mat-select [name]="'{{{ $this.name|name_name }}}'"
+              [id]="'{{{ $this.name|name_name }}}'"
+{{{ if($this.nullable==false): }}}required{{{ endif; }}}
+              #{{{ $this.name|name_name }}}="ngModel"
+              [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}">
+    {{{ foreach($this.selectOptions): }}}
+    <mat-option [value]="'{{{ $this.value }}}'">{{{ $this.text }}}</mat-option>
+    {{{ endforeach; }}}
+  </mat-select>
+  {{{ if($this.nullable==false): }}}
+        <mat-error class="error"
+                   *ngIf="{{{ $this.name|name_name }}}.hasError('required')"><span translate>This field is required</span>
+        </mat-error>
+  {{{ endif; }}}
+</mat-form-field>
+
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ endif; }}}
+
+{{{ if($this.show_in_detail==true): }}}
+{{{ if($this.input_type=='text'): }}}
+    <mat-form-field style="width: 100%;"
+                    appearance="outline">
+      <mat-label><span translate>{{{ $this.display_name }}}</span></mat-label>
+      <input matInput
+             type="text"
+             name="{{{ $this.name|name_name }}}"
+             id="{{{ $this.name|name_name }}}"
+             [placeholder]="('Enter' | translate) + ' ' + ('{{{ $this.display_name }}}' | translate)"
+             #{{{ $this.name|name_name }}}="ngModel"
+             [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}"
+             {{{ if($this.nullable==false): }}}required{{{ endif; }}}>
+{{{ if($this.nullable==false): }}}
+      <mat-error class="error"
+                 *ngIf="{{{ $this.name|name_name }}}.hasError('required')"><span translate>This field is required</span>
+      </mat-error>
+{{{ endif; }}}
+    </mat-form-field>
+{{{ endif; }}}
+{{{ if($this.input_type=='email'): }}}
+    <mat-form-field style="width: 100%;"
+                    appearance="outline">
+      <mat-label><span translate>{{{ $this.display_name }}}</span></mat-label>
+      <input matInput
+             email
+             type="email"
+             name="{{{ $this.name|name_name }}}"
+             id="{{{ $this.name|name_name }}}"
+             [placeholder]="('Enter' | translate) + ' ' + ('{{{ $this.display_name }}}' | translate)"
+             #{{{ $this.name|name_name }}}="ngModel"
+             [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}"
+             {{{ if($this.nullable==false): }}}required{{{ endif; }}}>
+             <mat-error class="error"
+                        *ngIf="{{{ $this.name|name_name }}}.hasError('email')"><span translate>Enter a valid email</span>
+             </mat-error>
+{{{ if($this.nullable==false): }}}
+      <mat-error class="error"
+                 *ngIf="{{{ $this.name|name_name }}}.hasError('required')"><span translate>Enter a valid email</span>
+      </mat-error>
+{{{ endif; }}}
+    </mat-form-field>
+{{{ endif; }}}
+{{{ if($this.input_type=='number'): }}}
+    <mat-form-field style="width: 100%;"
+                    appearance="outline">
+      <mat-label><span translate>{{{ $this.display_name }}}</span></mat-label>
+      <input matInput
+             type="number"
+             name="{{{ $this.name|name_name }}}"
+             id="{{{ $this.name|name_name }}}"
+             [placeholder]="('Enter' | translate) + ' ' + ('{{{ $this.display_name }}}' | translate)"
+             #{{{ $this.name|name_name }}}="ngModel"
+             [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}"
+             {{{ if($this.nullable==false): }}}required{{{ endif; }}}>
+{{{ if($this.nullable==false): }}}
+      <mat-error class="error"
+                 *ngIf="{{{ $this.name|name_name }}}.hasError('required')"><span translate>Enter a valid email</span>
+      </mat-error>
+{{{ endif; }}}
+    </mat-form-field>
+{{{ endif; }}}
+{{{ if($this.input_type=='date'): }}}
+    <mat-form-field style="width: 100%;"
+                      appearance="outline">
+        <mat-label><span translate>{{{ $this.display_name }}}</span></mat-label>
+        <input matInput
+               type="date"
+               [name]="'{{{ $this.name|name_name }}}'"
+               [id]="'{{{ $this.name|name_name }}}'"
+               [placeholder]="('Enter' | translate) + ' ' + ('{{{ $this.display_name }}}' | translate)"
+               #{{{ $this.name|name_name }}}="ngModel"
+               [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}"
+               {{{ if($this.nullable==false): }}}required{{{ endif; }}}>
+{{{ if($this.nullable==false): }}}
+        <mat-hint class="error"
+                  *ngIf="{{{ $this.name|name_name }}}.hasError('required')"><span translate>This field is required</span>
+        </mat-hint>
+{{{ endif; }}}
+      </mat-form-field>
+{{{ endif; }}}
+{{{ if($this.input_type=='datetime'): }}}
+    <mat-form-field style="width: 100%;"
+                      appearance="outline">
+        <mat-label><span translate>{{{ $this.display_name }}}</span></mat-label>
+        <input matInput
+               type="datetime-local"
+               name="{{{ $this.name|name_name }}}"
+               id="{{{ $this.name|name_name }}}"
+               [placeholder]="('Enter' | translate) + ' ' + ('{{{ $this.display_name }}}' | translate)"
+               #{{{ $this.name|name_name }}}="ngModel"
+               [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}"
+               {{{ if($this.nullable==false): }}}required{{{ endif; }}}>
+{{{ if($this.nullable==false): }}}
+        <mat-hint class="error"
+                  *ngIf="{{{ $this.name|name_name }}}.hasError('required')"><span translate>This field is required</span>
+        </mat-hint>
+{{{ endif; }}}
+      </mat-form-field>
+{{{ endif; }}}
+{{{ if($this.input_type=='html'): }}}
+        <h4 style="margin-top: 0; margin-bottom: 0.5rem;"><span translate>{{{ $this.display_name }}}</span></h4>
+{{{ if($this.nullable==false): }}}
+        <mat-hint class="error"
+                  *ngIf="{{{ $this.name|name_name }}}.hasError('required')"><span translate>This field is required</span>
+        </mat-hint>
+{{{ endif; }}}
+        <div class="NgxEditor__Wrapper"
+             style="margin-bottom: 1rem;">
+          <ngx-editor-menu [editor]="editor_{{{ $this.name|name_name }}}"></ngx-editor-menu>
+          <ngx-editor [name]="'{{{ $this.name|name_name }}}'"
+                      [id]="'{{{ $this.name|name_name }}}'"
+                      [editor]="editor_{{{ $this.name|name_name }}}"
+                      #resume="ngModel"
+                      [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}"
+                      [disabled]="false"
+{{{ if($this.nullable==false): }}}
+                      required
+{{{ endif; }}}
+                      [placeholder]="('Enter' | translate) + ' ' + ('{{{ $this.display_name }}}' | translate)"></ngx-editor>
+        </div>
+{{{ endif; }}}
+{{{ if($this.input_type=='file'): }}}
+    <mat-form-field style="width: 100%;"
+                  appearance="outline">
+        <mat-label><span translate>{{{ $this.display_name }}}</span></mat-label>
+            <img matPrefix
+                 style="max-height: 32px; max-width: 32px; margin-right: 0.5rem;"
+                 *ngIf="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}"
+                 [src]="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}">
+            <input matInput
+                   type="text"
+                   [name]="'{{{ $this.name|name_name }}}'"
+                   [id]="'{{{ $this.name|name_name }}}'"
+                   [placeholder]="'{{{ $this.display_name }}}' | translate"
+                   #{{{ $this.name|name_name }}}="ngModel"
+                   [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}}"
+                   {{{ if($this.nullable==false): }}}required{{{ endif; }}}>
+            <td-file-input matSuffix
+                           [name]="'{{{ $this.name|name_name }}}_file'"
+                           [(ngModel)]="files"
+                           color="primary"
+                           (select)="select{{{ $this.name|NameName }}}Event($event)"
+                           accept=".jpg,.png"
+                           [disabled]="disabled"
+                           [multiple]="false">
+              <mat-icon>attach_file</mat-icon>
+            </td-file-input>
+{{{ if($this.nullable==false): }}}
+            <mat-hint class="error"
+                      *ngIf="{{{ $name|nameName }}}.hasError('required')"><span translate>This field is required</span>
+            </mat-hint>
+{{{ endif; }}}
+    </mat-form-field>
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+    <input type="hidden"
+           name="{{{ $this.targetModel.name|name_name }}}_id"
+           id="{{{ $this.targetModel.name|name_name }}}_id"
+           #{{{ $this.targetModel.name|name_name }}}_id="ngModel"
+           [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_id"
+           {{{ if($this.targetModel.getRelationSchema().nullable==false): }}}required{{{ endif; }}}>
+{{{ if($this.targetModel.getRelationSchema().nullable==false): }}}
+    <!-- <mat-error class="error"
+               *ngIf="{{{ $this.targetModel.name|name_name }}}_id.invalid">
+      <span translate>Assign one</span> <span translate>{{{ $this.targetModel.display_name }}}</span>
+    </mat-error> -->
+{{{ endif; }}}
+    <app-belongs-to-input [label]="('{{{ $this.targetModel.display_name }}}' | translate)"
+{{{ if($this.targetModel.getRelationSchema().nullable==false): }}}
+                          [required]="true"
+{{{ endif; }}}
+                          (selectOut)="set{{{ $this.targetModel.name|NameName }}}($event)"
+                          (selectIdOut)="set{{{ $this.targetModel.name|NameName }}}Id($event)"
+                          [searchInputLabel]="('Add' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}'| translate)"
+                          [searchInputPlaceholder]="('Search' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}' | translate)"
+                          [selected]="{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}} ? {{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}} : null"
+                          [selectedId]="{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_id ? {{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_id : null"
+                          [searchUrl]="'api/{{{ $this.targetModel.name|name-names }}}'"
+                          [searchDisplayColumns]="['name']"
+                          [searchColumns]="['name']"
+                          [notFoundUrl]="'/admin/{{{ $this.targetModel.name|name-names }}}/0'"
+                          [notFoundButtonText]="('Create' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}' | translate)"
+                          [notFoundMessage]="('No results found for' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}' | translate)"></app-belongs-to-input>
+{{{ endif; }}}
+{{{ if($this.type=='hasMany'): }}}
+    <input type="hidden"
+           name="{{{ $this.targetModel.name|name_name }}}_ids"
+           id="{{{ $this.targetModel.name|name_name }}}_ids"
+           #{{{ $this.targetModel.name|name_name }}}_ids="ngModel"
+           [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_ids"
+{{{ if($this.targetModel.getRelationSchema().nullable==false): }}}
+           [required]="!{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_ids?.length"
+{{{ endif; }}}>
+{{{ if($this.targetModel.getRelationSchema().nullable==false): }}}
+    <!-- <mat-error class="error"
+               *ngIf="{{{ $this.targetModel.name|name_name }}}_ids.invalid">
+               <span translate>Assign at least one</span> <span translate>{{{ $this.targetModel.display_name }}}</span>
+    </mat-error> -->
+{{{ endif; }}}
+    <app-belongs-to-many-input [label]="('{{{ $this.targetModel.display_name }}}' | translate)"
+{{{ if($this.targetModel.getRelationSchema().nullable==false): }}}
+                               [min]="1"
+                               [required]="true"
+{{{ endif; }}}
+                               (selectOut)="set{{{ $this.targetModel.name|NameNames }}}($event)"
+                               (selectIdsOut)="set{{{ $this.targetModel.name|NameName }}}Ids($event)"
+                               [searchInputLabel]="('Add' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}'| translate)"
+                               [searchInputPlaceholder]="('Search' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}' | translate)"
+                               [selected]="{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_names }}} ?? []"
+                               [selectedIds]="{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_ids ?? []"
+                               [searchUrl]="'api/{{{ $this.targetModel.name|name-names }}}'"
+                               [searchDisplayColumns]="['name']"
+                               [searchColumns]="['name']"
+                               [notFoundUrl]="'/admin/{{{ $this.targetModel.name|name-names }}}/0'"
+                               [notFoundButtonText]="('Create' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}' | translate)"
+                               [notFoundMessage]="('No results found for' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}' | translate)"></app-belongs-to-many-input>
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+    <input type="hidden"
+           name="{{{ $this.targetModel.name|name_name }}}_ids"
+           id="{{{ $this.targetModel.name|name_name }}}_ids"
+           #{{{ $this.targetModel.name|name_name }}}_ids="ngModel"
+           [(ngModel)]="{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_ids"
+{{{ if($this.targetModel.getRelationSchema().nullable==false): }}}
+           [required]="!{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_ids?.length"
+{{{ endif; }}}>
+{{{ if($this.targetModel.getRelationSchema().nullable==false): }}}
+    <!-- <mat-error class="error"
+               *ngIf="{{{ $this.targetModel.name|name_name }}}_ids.invalid">
+               <span translate>Assign at least one</span> <span translate>{{{ $this.targetModel.display_name }}}</span>
+    </mat-error> -->
+{{{ endif; }}}
+    <app-belongs-to-many-input [label]="('{{{ $this.targetModel.display_name }}}' | translate)"
+{{{ if($this.targetModel.getRelationSchema().nullable==false): }}}
+                               [min]="1"
+                               [required]="true"
+{{{ endif; }}}
+                               (selectOut)="set{{{ $this.targetModel.name|NameNames }}}($event)"
+                               (selectIdsOut)="set{{{ $this.targetModel.name|NameName }}}Ids($event)"
+                               [searchInputLabel]="('Add' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}'| translate)"
+                               [searchInputPlaceholder]="('Search' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}' | translate)"
+                               [selected]="{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_names }}} ?? []"
+                               [selectedIds]="{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_ids ?? []"
+                               [searchUrl]="'api/{{{ $this.targetModel.name|name-names }}}'"
+                               [searchDisplayColumns]="['name']"
+                               [searchColumns]="['name']"
+                               [notFoundUrl]="'/admin/{{{ $this.targetModel.name|name-names }}}/0'"
+                               [notFoundButtonText]="('Create' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}' | translate)"
+                               [notFoundMessage]="('No results found for' | translate) + ' ' + ('{{{ $this.targetModel.display_name }}}' | translate)"></app-belongs-to-many-input>
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+  </form>
+
+  <div class="pad-top-lg">
+    <button mat-raised-button
+            color="success"
+            [disabled]="{{{ $name|nameNames }}}Form.invalid"
+            (click)="{{{ $name|nameName }}}Service.save()"
+            class="text-upper"><span translate>Save</span>
+    </button>
+    <button mat-button
+            (click)="{{{ $name|nameName }}}Service.setItem({}); {{{ $name|nameNames }}}ListComponent.router.navigateByUrl('/admin/{{{ $name|name-names }}}'); {{{ $name|nameNames }}}ListComponent.sidenav.sidenav.close()"
+            color="warn"
+            class="text-upper"><span translate>Cancel</span>
+    </button>
+  </div>
+
+
+</div>
+
+<div>
+  <pre *ngIf="!environment.production">
+{{{{{ $name|nameName }}}Service.model | json}}
+  </pre>
+</div>

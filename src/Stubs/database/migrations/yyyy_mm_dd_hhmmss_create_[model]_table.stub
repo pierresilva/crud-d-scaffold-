@@ -25,16 +25,21 @@ class Create{{{ $name|NameNames }}}Table extends Migration
         Schema::create('{{{ $name|name_names }}}', function (Blueprint $table) {
 {{{ endif; }}}
             $table->bigIncrements('id');
+            $table->timestamps();
 
 {{{ foreach($schemas): }}}
 {{{ if($this.belongsto!=''): }}}
-            $table->unsignedBigInteger('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
-            $table->foreign('{{{ $this.name|name_name }}}')->references('id')->on('{{{ $this.belongsto|name_names }}}')->onUpdate('cascade')->onDelete('cascade');
+{{{ $this.getUniqueId() }}}
+            $table->unsignedBigInteger('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}}->comment('{{{ $this.comment }}}'); // column
+            $table->foreign('{{{ $this.name|name_name }}}', '{{{ $this.randomNumber }}}_foreign') // relation
+                ->references('id')
+                ->on('{{{ $this.belongsto|name_names }}}')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
 {{{ else: }}}
-            $table->{{{ $this.type }}}('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
+            $table->{{{ $this.type }}}('{{{ $this.name|name_name }}}'{{{ if($this.type=='float'): }}}, 12, 3{{{ endif; }}}){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}}->comment('{{{ $this.comment }}}');
 {{{ endif; }}}
 {{{ endforeach; }}}
-            $table->timestamps();
 {{{ if($use_soft_delete==true): }}}
             $table->softDeletes();
 {{{ endif; }}}

@@ -55,7 +55,7 @@
               <tbody>
                 @foreach(${{{ $name|nameNames }}} as ${{{ $name|nameName }}})
                     <tr>
-                      <td scope="row"><a href="{{ route('{{{ $name|name-names }}}.show', ${{{ $name|nameName }}}->id) }}">{{${{{ $name|nameName }}}->id}}</a></td>
+                      <td scope="row"><a href="{{ route('{{{ $name|nameNames }}}.show', ${{{ $name|nameName }}}->id) }}">{{${{{ $name|nameName }}}->id}}</a></td>
 {{{ foreach($schemas): }}}
 {{{ if($this.belongsto==''): }}}
 {{{ if($this.show_in_list==true): }}}
@@ -66,7 +66,7 @@
 
 {{{ foreach($relations): }}}
 {{{ if($this.type=='belongsTo'): }}}
-                      <td>@if(${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}})<a href="{{ route('{{{ $this.targetModel.name|name-names }}}.show', ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}}->id) }}">{{ ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}</a>@else - @endif</td>
+                      <td>@if(${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}})<a href="{{ route('{{{ $this.targetModel.name|nameNames }}}.show', ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}}->id) }}">{{ ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}</a>@else - @endif</td>
 {{{ endif; }}}
 {{{ endforeach; }}}
 
@@ -75,7 +75,7 @@
                       <td>
                           @foreach(${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}} as ${{{ $this.targetModel.name|nameName }}})
                                         @if (!$loop->first) , @endif
-                                        <a href="{{ route('{{{ $this.targetModel.name|name-names }}}.show', ${{{ $this.targetModel.name|nameName }}}->id) }}">{{ ${{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}</a>
+                                        <a href="{{ route('{{{ $this.targetModel.name|nameNames }}}.show', ${{{ $this.targetModel.name|nameName }}}->id) }}">{{ ${{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}</a>
                           @endforeach
                       </td>
 {{{ endif; }}}
@@ -86,7 +86,7 @@
                       <td>
                           @foreach(${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}} as ${{{ $this.targetModel.name|nameName }}})
                                         @if (!$loop->first) , @endif
-                                        <a href="{{ route('{{{ $this.targetModel.name|name-names }}}.show', ${{{ $this.targetModel.name|nameName }}}->id) }}">{{ ${{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}(
+                                        <a href="{{ route('{{{ $this.targetModel.name|nameNames }}}.show', ${{{ $this.targetModel.name|nameName }}}->id) }}">{{ ${{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}(
 {{{ foreach($this.pivotModelSchemas): }}}
 {{{ if($this.show_in_list==true): }}}
                                             {{{ $this.display_name }}}:{{ ${{{ $parent.targetModel.name|nameName }}}->pivot->{{{ $this.name|name_name }}} }}
@@ -100,9 +100,9 @@
 
                       <td class="text-right">
                         <div class="btn-group" role="group">
-                            <a class="btn btn-sm btn-primary" href="{{ route('{{{ $name|name-names }}}.duplicate', ${{{ $name|nameName }}}->id) }}" data-toggle="tooltip" data-placement="top" title="Duplicate"><i class="material-icons d-block">add_to_photos</i></a>
-                            <a class="btn btn-sm btn-warning" href="{{ route('{{{ $name|name-names }}}.edit', ${{{ $name|nameName }}}->id) }}" data-toggle="tooltip" data-placement="top" title="Edit"><i class="material-icons d-block">edit</i></a>
-                            <form method="POST" action="{{ route('{{{ $name|name-names }}}.destroy', ${{{ $name|nameName }}}->id) }}" accept-charset="UTF-8" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
+                            <a class="btn btn-sm btn-primary" href="{{ route('{{{ $name|nameNames }}}.duplicate', ${{{ $name|nameName }}}->id) }}" data-toggle="tooltip" data-placement="top" title="Duplicate"><i class="material-icons d-block">add_to_photos</i></a>
+                            <a class="btn btn-sm btn-warning" href="{{ route('{{{ $name|nameNames }}}.edit', ${{{ $name|nameName }}}->id) }}" data-toggle="tooltip" data-placement="top" title="Edit"><i class="material-icons d-block">edit</i></a>
+                            <form method="POST" action="{{ route('{{{ $name|nameNames }}}.destroy', ${{{ $name|nameName }}}->id) }}" accept-charset="UTF-8" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
                                 {{ method_field('DELETE') }}
                                 {{ csrf_field() }}
                                 <button type="submit" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="material-icons d-block">delete</i></button>

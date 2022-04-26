@@ -1,0 +1,50 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+{{{ if($is_pivot==true): }}}
+class Alter{{{ $migrationNumber }}}RemoveColumnTo{{{ $name|NameName }}}Table extends Migration
+{{{ else: }}}
+class Alter{{{ $migrationNumber }}}RemoveColumnTo{{{ $name|NameNames }}}Table extends Migration
+{{{ endif; }}}
+
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::disableForeignKeyConstraints();
+{{{ if($is_pivot==true): }}}
+        Schema::table('{{{ $name|name_name }}}', function (Blueprint $table) {
+{{{ else: }}}
+        Schema::table('{{{ $name|name_names }}}', function (Blueprint $table) {
+{{{ endif; }}}
+            \App\Helpers\DataBaseHelpers::dropForeignKey('{{{ $name|name_names }}}', '{{{ $column }}}');
+            $table->dropColumn('{{{ $column }}}');
+        });
+        Schema::enableForeignKeyConstraints();
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+{{{ if($is_pivot==true): }}}
+        Schema::table('{{{ $name|name_name }}}', function (Blueprint $table) {
+{{{ else: }}}
+        Schema::table('{{{ $name|name_names }}}', function (Blueprint $table) {
+{{{ endif; }}}
+            $table->string('{{{ $column }}}')->nullable();
+        });
+        Schema::enableForeignKeyConstraints();
+    }
+}

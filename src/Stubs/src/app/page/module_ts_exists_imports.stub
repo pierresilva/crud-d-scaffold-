@@ -1,0 +1,7 @@
+    // imports generated section
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SharedModule,
+        {{{ $name|NameNames }}}PageRoutingModule
+    // end imports generated section

@@ -1,0 +1,23 @@
+// model generated section
+    id?: any;
+{{{ foreach($schemas): }}}
+    {{{ $this.name|name_name }}}?: any,
+{{{ endforeach; }}}
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+    {{{ $this.targetModel.name|name_name }}}?: {{{ $this.targetModel.name|NameName }}},
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+    {{{ $this.targetModel.name|name_name }}}_ids?: any[],
+    {{{ $this.targetModel.name|name_names }}}?: {{{ $this.targetModel.name|NameName }}}[],
+{{{ endif; }}}
+{{{ if($this.type=='hasMany'): }}}
+    {{{ $this.targetModel.name|name_name }}}_ids?: any[],
+    {{{ $this.targetModel.name|name_names }}}?: {{{ $this.targetModel.name|NameName }}}[],
+{{{ endif; }}}
+{{{ endforeach; }}}
+    created_at?: any;
+    updated_at?: any;
+    deleted_at?: any;
+// end model generated section
+

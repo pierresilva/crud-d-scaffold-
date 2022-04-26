@@ -1,0 +1,335 @@
+<form #{{{ $name|nameNames }}}Form="ngForm" novalidate autocomplete="off">
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+
+    <!-- {{{ $this.targetModel.name|name_name }}}_id -->
+    <ion-item class="item-transparent">
+        <ion-label>{{ '{{{ $this.targetModel.display_name|NameName }}}' | titlecase }}</ion-label>
+        <ionic-selectable name="{{{ $this.targetModel.name|name_name }}}_id"
+                          id="{{{ $this.targetModel.name|name_name }}}_id-field"
+{{{ if($this.targetModel.getRelationSchema().nullable==false): }}}
+                          [required]="true"
+{{{ endif; }}}
+                          [(ngModel)]="model.{{{ $this.targetModel.name|name_name }}}"
+                          [items]="{{{ $name|nameNames }}}Service.{{{ $name|nameName }}}Lists.{{{ $this.targetModel.name|NameName }}}"
+                          itemValueField="id"
+                          itemTextField="{{{ $this.targetModel.getRelationSchema().name|name_name }}}"
+                          [canClear]="true"
+                          [hasConfirmButton]="true"
+                          [confirmButtonText]="'Seleccionar'"
+                          [searchPlaceholder]="'Buscar ' + ('{{{ $this.targetModel.display_name }}}' | titlecase)"
+                          [searchFailText]="'No se encontro ' + ('{{{ $this.targetModel.display_name }}}' | titlecase) + ' que coincida!'"
+                          [closeButtonText]="'Cancelar'"
+                          [clearButtonText]="'Limpiar'"
+                          [canSearch]="true"
+                          (onChange)="set{{{ $this.targetModel.name|NameName }}}Id($event)">
+        </ionic-selectable>
+    </ion-item>
+    <div class="validation-errors">
+        <ng-container *ngFor="let validation of validationMessages.{{{ $this.targetModel.name|name_name }}}_id">
+            <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.targetModel.name|name_name }}}_id']?.hasError(validation.type)">
+                {{ validation.message }}
+            </div>
+        </ng-container>
+    </div>
+    <!-- end {{{ $this.targetModel.name|name_name }}}_id -->
+
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+
+    <!-- {{{ $this.targetModel.name|name_name }}}_ids -->
+    <ion-item class="item-transparent">
+        <ion-label>{{ '{{{ $this.targetModel.display_name }}}' | titlecase }}</ion-label>
+        <ionic-selectable name="{{{ $this.targetModel.name|name_name }}}_ids"
+                          id="{{{ $this.targetModel.name|name_name }}}_ids-field"
+                          [(ngModel)]="model.{{{ $this.targetModel.name|name_names }}}"
+                          [items]="{{{ $name|nameNames }}}Service.{{{ $name|nameName }}}Lists.{{{ $this.targetModel.name|NameName }}}"
+                          itemValueField="id"
+                          itemTextField="{{{ $this.targetModel.getRelationSchema().name|name_name }}}"
+                          [isMultiple]="true"
+                          [canClear]="true"
+                          [hasConfirmButton]="true"
+                          [confirmButtonText]="'Seleccionar'"
+                          [searchPlaceholder]="'Buscar ' + ('{{{ $this.targetModel.display_name }}}' | titlecase)"
+                          [searchFailText]="'No se encontro ' + ('{{{ $this.targetModel.display_name }}}' | titlecase) + ' que coincida!'"
+                          [closeButtonText]="'Cancelar'"
+                          [clearButtonText]="'Limpiar'"
+                          [canSearch]="true"
+                          (onChange)="set{{{ $this.targetModel.name|NameName }}}Ids($event)">
+        </ionic-selectable>
+    </ion-item>
+    <div class="validation-errors">
+        <ng-container *ngFor="let validation of validationMessages.{{{ $this.targetModel.name|name_name }}}_ids">
+            <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.targetModel.name|name_name }}}_ids']?.hasError(validation.type)">
+                {{ validation.message }}
+            </div>
+        </ng-container>
+    </div>
+    <!-- end {{{ $this.targetModel.name|name_name }}}_ids -->
+
+{{{ endif; }}}
+{{{ if($this.type=='hasMany'): }}}
+
+    <!-- {{{ $this.targetModel.name|name_name }}}_ids -->
+    <ion-item class="item-transparent">
+        <ion-label>{{ '{{{ $this.targetModel.display_name }}}' | titlecase }}</ion-label>
+        <ionic-selectable name="{{{ $this.targetModel.name|name_name }}}_ids"
+                          id="{{{ $this.targetModel.name|name_name }}}_ids-field"
+                          [(ngModel)]="model.{{{ $this.targetModel.name|name_names }}}"
+                          [items]="{{{ $name|nameNames }}}Service.{{{ $name|nameName }}}Lists.{{{ $this.targetModel.name|NameName }}}"
+                          itemValueField="id"
+                          itemTextField="{{{ $this.targetModel.getRelationSchema().name|name_name }}}"
+                          [isMultiple]="true"
+                          [canClear]="true"
+                          [hasConfirmButton]="true"
+                          [confirmButtonText]="'Seleccionar'"
+                          [searchPlaceholder]="'Buscar ' + ('{{{ $this.targetModel.display_name }}}' | titlecase)"
+                          [searchFailText]="'No se encontro ' + ('{{{ $this.targetModel.display_name }}}' | titlecase) + ' que coincida!'"
+                          [closeButtonText]="'Cancelar'"
+                          [clearButtonText]="'Limpiar'"
+                          [canSearch]="true"
+                          (onChange)="set{{{ $this.targetModel.name|NameName }}}Ids($event)">
+        </ionic-selectable>
+    </ion-item>
+    <div class="validation-errors">
+        <ng-container *ngFor="let validation of validationMessages.{{{ $this.targetModel.name|name_name }}}_ids">
+            <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.targetModel.name|name_name }}}_ids']?.hasError(validation.type)">
+            {{ validation.message }}
+            </div>
+        </ng-container>
+    </div>
+    <!-- end {{{ $this.targetModel.name|name_name }}}_ids -->
+
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ foreach($schemas): }}}
+{{{ if($this.show_in_detail==true): }}}
+{{{ if($this.input_type=='select'): }}}
+{{{ if($this.custom_options!=''): }}}
+{{{ $this.getSelectOptions() }}}
+
+            <!-- {{{ $this.name|name_name }}} -->
+            <ion-item class="item-transparent">
+                <ion-label>{{ '{{{ $this.display_name }}}' | titlecase }}</ion-label>
+                <ion-select [(ngModel)]="model.{{{ $this.name|name_name }}}"
+{{{ if($this.nullable==false): }}}
+                            [required]="true"
+{{{ endif; }}}
+                            name="{{{ $this.name|name_name }}}"
+                            id="{{{ $this.name|name_name }}}-field"
+                            okText="Seleccionar"
+                            cancelText="Cancelar">
+{{{ foreach($this.selectOptions): }}}
+                    <ion-select-option value="{{{ $this.value }}}">{{ '{{{ $this.text }}}' | titlecase }}</ion-select-option>
+{{{ endforeach; }}}
+            </ion-select>
+        </ion-item>
+        <div class="validation-errors">
+            <ng-container *ngFor="let validation of validationMessages.{{{ $this.name|name_name }}}">
+                <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.name|name_name }}}']?.hasError(validation.type)">
+                    {{ validation.message }}
+                </div>
+            </ng-container>
+        </div>
+        <!-- end {{{ $this.name|name_name }}} -->
+
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ if($this.input_type=='text'): }}}
+
+            <!-- {{{ $this.name|name_name }}} -->
+            <ion-item class="item-transparent">
+                <ion-label>{{ '{{{ $this.display_name }}}' | titlecase }}</ion-label>
+                <ion-input [(ngModel)]="model.{{{ $this.name|name_name }}}"
+                            type="text"
+                            name="{{{ $this.name|name_name }}}"
+                            id="{{{ $this.name|name_name }}}-field"
+{{{ if($this.nullable==false): }}}
+                            [required]="true"
+{{{ endif; }}}
+                            placeholder=""></ion-input>
+            </ion-item>
+            <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMessages.{{{ $this.name|name_name }}}">
+                    <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.name|name_name }}}']?.hasError(validation.type)">
+                        {{ validation.message }}
+                    </div>
+                </ng-container>
+            </div>
+            <!-- end {{{ $this.name|name_name }}} -->
+
+{{{ endif; }}}
+{{{ if($this.input_type=='number'): }}}
+
+            <!-- {{{ $this.name|name_name }}} -->
+            <ion-item class="item-transparent">
+                <ion-label>{{ '{{{ $this.display_name }}}' | titlecase }}</ion-label>
+                <ion-input [(ngModel)]="model.{{{ $this.name|name_name }}}"
+                            type="number"
+                            name="{{{ $this.name|name_name }}}"
+                            id="{{{ $this.name|name_name }}}-field"
+{{{ if($this.nullable==false): }}}
+                            [required]="true"
+{{{ endif; }}}
+                            placeholder=""></ion-input>
+            </ion-item>
+            <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMessages.{{{ $this.name|name_name }}}">
+                    <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.name|name_name }}}']?.hasError(validation.type)">
+                        {{ validation.message }}
+                    </div>
+                </ng-container>
+            </div>
+            <!-- end {{{ $this.name|name_name }}} -->
+
+{{{ endif; }}}
+{{{ if($this.input_type=='textarea'): }}}
+
+            <!-- {{{ $this.name|name_name }}} -->
+            <ion-item class="item-transparent">
+                <ion-label>{{ '{{{ $this.display_name }}}' | titlecase }}</ion-label>
+                <ion-textarea [(ngModel)]="model.{{{ $this.name|name_name }}}"
+                              name="{{{ $this.name|name_name }}}"
+                              id="{{{ $this.name|name_name }}}-field"
+{{{ if($this.nullable==false): }}}
+                              [required]="true"
+{{{ endif; }}}
+                              rows="6"
+                              placeholder=""></ion-textarea>
+            </ion-item>
+            <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMessages.{{{ $this.name|name_name }}}">
+                    <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.name|name_name }}}']?.hasError(validation.type)">
+                        {{ validation.message }}
+                    </div>
+                </ng-container>
+            </div>
+            <!-- end {{{ $this.name|name_name }}} -->
+
+{{{ endif; }}}
+{{{ if($this.input_type=='checkbox'): }}}
+
+            <!-- {{{ $this.name|name_name }}} -->
+            <ion-item class="item-transparent">
+                <ion-label>{{ '{{{ $this.display_name }}}' | titlecase }}</ion-label>
+                <ion-toggle name="{{{ $this.name|name_name }}}"
+                            id="{{{ $this.name|name_name }}}-field"
+                            slot="end"
+                            [(ngModel)]="model.{{{ $this.name|name_name }}}"></ion-toggle>
+            </ion-item>
+            <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMessages.{{{ $this.name|name_name }}}">
+                    <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.name|name_name }}}']?.hasError(validation.type)">
+                        {{ validation.message }}
+                    </div>
+                </ng-container>
+            </div>
+            <!-- end {{{ $this.name|name_name }}} -->
+
+{{{ endif; }}}
+{{{ if($this.input_type=='date'): }}}
+
+            <!-- {{{ $this.name|name_name }}} -->
+            <ion-item class="item-transparent">
+                <ion-label>{{ '{{{ $this.display_name }}}' | titlecase }}</ion-label>
+                <ion-datetime name="{{{ $this.name|name_name }}}"
+                              id="{{{ $this.name|name_name }}}-field"
+{{{ if($this.nullable==false): }}}
+                              [required]="true"
+{{{ endif; }}}
+                              [doneText]="'Seleccionar'"
+                              max="2040-12-31"
+                              [cancelText]="'Cancelar'"
+                              [(ngModel)]="model.{{{ $this.name|name_name }}}"
+                              displayFormat="DD/MM/YYYY"></ion-datetime>
+            </ion-item>
+            <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMessages.{{{ $this.name|name_name }}}">
+                    <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.name|name_name }}}']?.hasError(validation.type)">
+                        {{ validation.message }}
+                    </div>
+                </ng-container>
+            </div>
+            <!-- end {{{ $this.name|name_name }}} -->
+
+{{{ endif; }}}
+{{{ if($this.input_type=='datetime'): }}}
+
+            <!-- {{{ $this.name|name_name }}} -->
+            <ion-item class="item-transparent">
+                <ion-label>{{ '{{{ $this.display_name }}}' | titlecase }}</ion-label>
+                <ion-datetime name="{{{ $this.name|name_name }}}"
+                              id="{{{ $this.name|name_name }}}-field"
+{{{ if($this.nullable==false): }}}
+                              [required]="true"
+{{{ endif; }}}
+                              [doneText]="'Seleccionar'"
+                              max="2040-12-31 23:59:59"
+                              [cancelText]="'Cancelar'"
+                              [(ngModel)]="model.{{{ $this.name|name_name }}}"
+                              displayFormat="DD/MM/YYYY HH:mm"></ion-datetime>
+            </ion-item>
+            <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMessages.{{{ $this.name|name_name }}}">
+                    <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.name|name_name }}}']?.hasError(validation.type)">
+                        {{ validation.message }}
+                    </div>
+                </ng-container>
+            </div>
+            <!-- end {{{ $this.name|name_name }}} -->
+
+{{{ endif; }}}
+{{{ if($this.input_type=='time'): }}}
+
+            <!-- {{{ $this.name|name_name }}} -->
+            <ion-item class="item-transparent">
+                <ion-label>{{ '{{{ $this.display_name }}}' | titlecase }}</ion-label>
+                <ion-datetime name="{{{ $this.name|name_name }}}"
+                              id="{{{ $this.name|name_name }}}-field"
+{{{ if($this.nullable==false): }}}
+                              [required]="true"
+{{{ endif; }}}
+                              [doneText]="'Seleccionar'"
+                              max="23:59:59"
+                              [cancelText]="'Cancelar'"
+                              [(ngModel)]="model.{{{ $this.name|name_name }}}"
+                              displayFormat="HH:mm"></ion-datetime>
+            </ion-item>
+            <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMessages.{{{ $this.name|name_name }}}">
+                    <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.name|name_name }}}']?.hasError(validation.type)">
+                        {{ validation.message }}
+                    </div>
+                </ng-container>
+            </div>
+            <!-- end {{{ $this.name|name_name }}} -->
+
+{{{ endif; }}}
+{{{ if($this.input_type=='html'): }}}
+
+            <!-- {{{ $this.name|name_name }}} -->
+            <ion-item class="item-transparent">
+                <ion-label position="stacked" style="font-size: 1rem;">{{ '{{{ $this.display_name }}}' | titlecase }}</ion-label>
+                <input [ngxSummernote]
+                       name="{{{ $this.name|name_name }}}"
+                       id="{{{ $this.name|name_name }}}-field"
+{{{ if($this.nullable==false): }}}
+                       [required]="true"
+{{{ endif; }}}
+                       [(ngModel)]="model.{{{ $this.name|name_name }}}">
+            </ion-item>
+            <div class="validation-errors">
+                <ng-container *ngFor="let validation of validationMessages.{{{ $this.name|name_name }}}">
+                    <div class="error-message" *ngIf="{{{ $name|nameNames }}}Form.form.controls['{{{ $this.name|name_name }}}']?.hasError(validation.type)">
+                        {{ validation.message }}
+                    </div>
+                </ng-container>
+            </div>
+            <!-- end {{{ $this.name|name_name }}} -->
+
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+</form>

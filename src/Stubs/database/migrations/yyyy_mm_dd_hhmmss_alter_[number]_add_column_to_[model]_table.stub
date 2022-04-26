@@ -1,0 +1,70 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+{{{ if($is_pivot==true): }}}
+class Alter{{{ $migrationNumber }}}AddColumnTo{{{ $name|NameName }}}Table extends Migration
+{{{ else: }}}
+class Alter{{{ $migrationNumber }}}AddColumnTo{{{ $name|NameNames }}}Table extends Migration
+{{{ endif; }}}
+
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::disableForeignKeyConstraints();
+{{{ if($is_pivot==true): }}}
+        Schema::table('{{{ $name|name_name }}}', function (Blueprint $table) {
+{{{ else: }}}
+        Schema::table('{{{ $name|name_names }}}', function (Blueprint $table) {
+{{{ endif; }}}
+
+{{{ foreach($schemas): }}}
+{{{ if($this.belongsto!=''): }}}
+{{{ $this.getUniqueId() }}}
+            $table->unsignedBigInteger('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
+            $table->foreign('{{{ $this.name|name_name }}}', '{{{ $this.randomNumber }}}_foreign')
+                ->references('id')
+                ->on('{{{ $this.belongsto|name_names }}}')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+{{{ else: }}}
+            $table->{{{ $this.type }}}('{{{ $this.name|name_name }}}'{{{ if($this.type=='float'): }}}, 12, 3{{{ endif; }}}){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}}->comment('{{{ $this.comment }}}');
+{{{ endif; }}}
+{{{ endforeach; }}}
+        });
+        Schema::enableForeignKeyConstraints();
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+{{{ if($is_pivot==true): }}}
+        Schema::table('{{{ $name|name_name }}}', function (Blueprint $table) {
+{{{ else: }}}
+        Schema::table('{{{ $name|name_names }}}', function (Blueprint $table) {
+{{{ endif; }}}
+{{{ foreach($schemas): }}}
+{{{ if($this.belongsto!=''): }}}
+            $table->dropForeign('{{{ $this.randomNumber }}}_foreign');
+            $table->dropColumn('{{{ $this.name|name_name }}}');
+{{{ else: }}}
+            $table->dropColumn('{{{ $this.name|name_name }}}');
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+        });
+        Schema::enableForeignKeyConstraints();
+    }
+}

@@ -1,0 +1,41 @@
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+
+import {IonicModule} from '@ionic/angular';
+
+import {SharedModule} from '../@shared/shared.module';
+
+import {{{{ $name|NameNames }}}PageRoutingModule} from './{{{ $name|name-names }}}-routing.module';
+
+import { {{{ $name|NameNames }}}Page} from './{{{ $name|name-names }}}.page';
+import { {{{ $name|NameNames }}}ListComponent} from "./{{{ $name|name-names }}}-list/{{{ $name|name-names }}}-list.component";
+import { {{{ $name|NameNames }}}CreateComponent} from "./{{{ $name|name-names }}}-create/{{{ $name|name-names }}}-create.component";
+import { {{{ $name|NameNames }}}DuplicateComponent} from "./{{{ $name|name-names }}}-duplicate/{{{ $name|name-names }}}-duplicate.component";
+import { {{{ $name|NameNames }}}EditComponent} from "./{{{ $name|name-names }}}-edit/{{{ $name|name-names }}}-edit.component";
+import { {{{ $name|NameNames }}}FormComponent} from "./{{{ $name|name-names }}}-form/{{{ $name|name-names }}}-form.component";
+
+@NgModule({
+    imports: [
+    // imports generated section
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SharedModule,
+        {{{ $name|NameNames }}}PageRoutingModule
+    // end imports generated section
+    ],
+    declarations: [
+    // declarations generated section
+        {{{ $name|NameNames }}}Page,
+        {{{ $name|NameNames }}}ListComponent,
+        {{{ $name|NameNames }}}CreateComponent,
+        {{{ $name|NameNames }}}DuplicateComponent,
+        {{{ $name|NameNames }}}EditComponent,
+        {{{ $name|NameNames }}}FormComponent,
+    // end declarations generated section
+    ]
+})
+export class {{{ $name|NameNames }}}PageModule {
+}
+

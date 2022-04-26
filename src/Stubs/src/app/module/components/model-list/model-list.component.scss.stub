@@ -1,0 +1,24 @@
+
+.layout-mat-sidenav-container {
+  height: calc(100vh - 230px);
+}
+
+.layout-mat-sidenav-container-mobile {
+  height: calc(100vh - 214px);
+}
+
+:host {
+  ::ng-deep {
+    mat-sidenav-content {
+      overflow-x: hidden;
+    }
+
+    .td-data-table-scrollable {
+      -ms-overflow-style: none; /* Internet Explorer 10+ */
+      scrollbar-width: none; /* Firefox */
+    }
+    .td-data-table-scrollable::-webkit-scrollbar {
+      display: none; /* Safari and Chrome */
+    }
+  }
+}

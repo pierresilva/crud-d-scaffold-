@@ -1,0 +1,17 @@
+{{{ foreach($models): }}}
+
+{{{ if($this.is_pivot==false): }}}
+
+// {{{ $this.name|NAME_NAMES }}}
+
+
+Route::get("{{{ $this.name|name-names }}}/export", ['as' => 'api.{{{ $this.name|name-names }}}.export', 'uses' => 'Api\{{{ $this.name|NameName }}}Controller@export']);
+Route::put("{{{ $this.name|name-names }}}/delete-multiple", ['as' => 'api.{{{ $this.name|name-names }}}.delete-multiple', 'uses' => 'Api\{{{ $this.name|NameName }}}Controller@destroyMultiple']);
+Route::get("{{{ $this.name|name-names }}}/{id}","Api\{{{ $this.name|NameName }}}Controller@show");
+Route::get("{{{ $this.name|name-names }}}","Api\{{{ $this.name|NameName }}}Controller@index");
+Route::post("{{{ $this.name|name-names }}}","Api\{{{ $this.name|NameName }}}Controller@store");
+Route::put("{{{ $this.name|name-names }}}/{id}","Api\{{{ $this.name|NameName }}}Controller@update");
+Route::delete("{{{ $this.name|name-names }}}/{id}","Api\{{{ $this.name|NameName }}}Controller@destroy");
+
+{{{ endif; }}}
+{{{ endforeach; }}}

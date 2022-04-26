@@ -1,0 +1,13 @@
+// lists generated section
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+    {{{ $this.targetModel.name|NameName }}}?: {{{ $this.targetModel.name|NameName }}}[],
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+    {{{ $this.targetModel.name|NameName }}}?: {{{ $this.targetModel.name|NameName }}}[],
+{{{ endif; }}}
+{{{ if($this.type=='hasMany'): }}}
+    {{{ $this.targetModel.name|NameName }}}?: {{{ $this.targetModel.name|NameName }}}[],
+{{{ endif; }}}
+{{{ endforeach; }}}
+// end lists generated section

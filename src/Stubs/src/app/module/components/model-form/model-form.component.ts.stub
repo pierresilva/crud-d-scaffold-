@@ -1,0 +1,135 @@
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {environment} from "@env/environment";
+import {Editor} from "ngx-editor";
+import {TdFileService} from "@covalent/core/file";
+import {SnackBarService} from "@shared/services/snack-bar.service";
+import {HttpApiService} from "@shared/services/http-api.service";
+import {{{{ $name|NameName }}}Service} from "@app/admin/{{{ $name|name-names }}}/services/{{{ $name|name-name }}}.service";
+import {{{{ $name|NameNames }}}ListComponent} from "@app/admin/{{{ $name|name-names }}}/components/{{{ $name|name-names }}}-list/{{{ $name|name-names }}}-list.component";
+
+@Component({
+  selector: 'app-{{{ $name|name-names }}}-form',
+  templateUrl: './{{{ $name|name-names }}}-form.component.html',
+  styleUrls: ['./{{{ $name|name-names }}}-form.component.scss']
+})
+export class {{{ $name|NameNames }}}FormComponent implements OnInit, OnDestroy {
+
+{{{ foreach($schemas): }}}
+{{{ if($this.input_type=='html'): }}}
+  public editor_{{{ $this.name|name_name }}}: Editor | any;
+{{{ endif; }}}
+{{{ endforeach; }}}
+  public files: File | FileList | any;
+  disabled: boolean = false;
+  hour = '23:59:59';
+
+  environment = environment;
+
+  constructor(
+    public {{{ $name|nameName }}}Service: {{{ $name|NameName }}}Service,
+    public fileUploadService: TdFileService,
+    public snackBar: SnackBarService,
+    public api: HttpApiService,
+    public {{{ $name|nameNames }}}ListComponent: {{{ $name|NameNames }}}ListComponent,
+  ) {
+{{{ foreach($schemas): }}}
+{{{ if($this.input_type=='html'): }}}
+    this.editor_{{{ $this.name|name_name }}} = new Editor();
+{{{ endif; }}}
+{{{ endforeach; }}}
+  }
+
+  ngOnInit(): void {
+  }
+
+  ngOnDestroy(): void {
+{{{ foreach($schemas): }}}
+{{{ if($this.input_type=='html'): }}}
+    this.editor_{{{ $this.name|name_name }}}.destroy();
+{{{ endif; }}}
+{{{ endforeach; }}}
+  }
+
+{{{ foreach($schemas): }}}
+{{{ if($this.input_type=='file'): }}}
+  select{{{ $this.name|NameName }}}Event(files: FileList | File): void {
+    if (files instanceof FileList) {
+
+      } else {
+        let formData = new FormData();
+          formData.set('file', files);
+          this.api.post('/api/uploads', formData)
+            .subscribe(
+              (response: any) => {
+                this.{{{ $name|nameName }}}Service.model.{{{ $this.name|name_name }}} = response.data.url;
+                this.snackBar.success(response.message);
+              },
+              (error: any) => {
+                this.snackBar.warning(error.errors.file[0]);
+              }
+            );
+      }
+  }
+
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+// {{{ $this.targetModel.name|NameName }}}
+
+
+  set{{{ $this.targetModel.name|NameName }}}({{{ $this.targetModel.name|nameName }}}: any) {
+      if (!{{{ $this.targetModel.name|nameName }}}) {
+        this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}} = null;
+      }
+      this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}} = {{{ $this.targetModel.name|nameName }}};
+    }
+
+    set{{{ $this.targetModel.name|NameName }}}Id({{{ $this.targetModel.name|nameName }}}Id: any) {
+      if (!{{{ $this.targetModel.name|nameName }}}Id) {
+        this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_id = null;
+      }
+      this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_id = {{{ $this.targetModel.name|nameName }}}Id;
+    }
+
+{{{ endif; }}}
+{{{ if($this.type=='belongsToMany'): }}}
+// {{{ $this.targetModel.name|NameNames }}}
+
+
+  set{{{ $this.targetModel.name|NameNames }}}({{{ $this.targetModel.name|nameNames }}}: any[]) {
+    if (!{{{ $this.targetModel.name|nameNames }}}.length) {
+      this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_names }}} = [];
+    }
+    this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_names }}} = {{{ $this.targetModel.name|nameNames }}};
+  }
+  set{{{ $this.targetModel.name|NameName }}}Ids({{{ $this.targetModel.name|nameName }}}Ids: any[]) {
+    if (!{{{ $this.targetModel.name|nameName }}}Ids.length) {
+      this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_ids = null;
+    }
+    this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_ids = {{{ $this.targetModel.name|nameName }}}Ids;
+  }
+
+{{{ endif; }}}
+{{{ if($this.type=='hasMany'): }}}
+// {{{ $this.targetModel.name|NameNames }}}
+
+
+  set{{{ $this.targetModel.name|NameNames }}}({{{ $this.targetModel.name|nameNames }}}: any[]) {
+      if (!{{{ $this.targetModel.name|nameNames }}}.length) {
+        this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_names }}} = [];
+      }
+      this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_names }}} = {{{ $this.targetModel.name|nameNames }}};
+    }
+  set{{{ $this.targetModel.name|NameName }}}Ids({{{ $this.targetModel.name|nameName }}}Ids: any[]) {
+    if (!{{{ $this.targetModel.name|nameName }}}Ids.length) {
+      this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_ids = null;
+    }
+    this.{{{ $name|nameName }}}Service.model.{{{ $this.targetModel.name|name_name }}}_ids = {{{ $this.targetModel.name|nameName }}}Ids;
+  }
+
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+}

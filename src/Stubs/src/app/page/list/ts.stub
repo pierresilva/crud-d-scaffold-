@@ -1,0 +1,39 @@
+import {Component, OnInit, ViewChild} from '@angular/core';
+import { {{{ $name|NameNames }}}Service} from "../{{{ $name|name-names }}}.service";
+import {ApiService} from "../../@shared/services/api.service";
+import {LoadingService} from "../../@shared/services/loading.service";
+import {IonContent} from '@ionic/angular';
+import {SplitPanelService} from "../../@shared/services/split-panel.service";
+
+@Component({
+    selector: 'app-{{{ $name|name-names }}}-list',
+    templateUrl: './{{{ $name|name-names }}}-list.component.html',
+    styleUrls: ['./{{{ $name|name-names }}}-list.component.scss'],
+})
+export class {{{ $name|NameNames }}}ListComponent implements OnInit {
+
+    @ViewChild(IonContent, {static: false}) content: IonContent;
+
+    popover: any;
+
+    constructor(
+        public {{{ $name|nameNames }}}Service: {{{ $name|NameNames }}}Service,
+        public api: ApiService,
+        public loading: LoadingService,
+        public splitPanel: SplitPanelService,
+    ) {
+    }
+
+    ngOnInit() {
+        this.{{{ $name|nameNames }}}Service.get{{{ $name|NameNames }}}();
+    }
+
+    ionViewWillEnter() {
+     this.splitPanel.show.next(true);
+    }
+
+    public scrollToTop() {
+        this.content.scrollToTop(300);
+    }
+
+}

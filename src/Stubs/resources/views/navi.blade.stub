@@ -16,7 +16,7 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 @foreach($model_title_list as $model_name => $model_title)
-                                <a class="dropdown-item @if(Request::is($model_name.'*')) active @endif" href="{{ route(\Str::kebab($model_name).'.index') }}">{{$model_title}}</a>
+                                <a class="dropdown-item @if(Request::is($model_name.'*')) active @endif" href="{{ route($model_name.'.index') }}">{{$model_title}}</a>
                                 @endforeach
                             </div>
                         </li>

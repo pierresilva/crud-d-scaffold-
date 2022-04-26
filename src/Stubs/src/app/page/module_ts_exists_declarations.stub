@@ -1,0 +1,9 @@
+
+    // declarations generated section
+        {{{ $name|NameNames }}}Page,
+        {{{ $name|NameNames }}}ListComponent,
+        {{{ $name|NameNames }}}CreateComponent,
+        {{{ $name|NameNames }}}DuplicateComponent,
+        {{{ $name|NameNames }}}EditComponent,
+        {{{ $name|NameNames }}}FormComponent,
+    // end declarations generated section
